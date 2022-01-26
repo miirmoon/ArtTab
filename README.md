@@ -21,7 +21,7 @@
 <img src="https://img.shields.io/badge/Kubernetes-3D5AFE?style=for-the-badge&logo=Kubernetes&logoColor=white">
 <img src="https://img.shields.io/badge/GIT-E65100?style=for-the-badge&logo=GIT&logoColor=white">   
 <img src="https://img.shields.io/badge/MARIADB-283593?style=for-the-badge&logo=MARIADB&logoColor=white">
-<img src="https://img.shields.io/badge/AMAZONAWS-424242?style=for-the-badge&logo=AMAZONAWS&logoColor=white">   
+<img src="https://img.shields.io/badge/AMAZONAWS-424242?style=for-the-badge&logo=AMAZONWebService&logoColor=white">   
 
 </center>
 
