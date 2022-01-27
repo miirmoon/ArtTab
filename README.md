@@ -10,20 +10,14 @@
 |🍗Backend🥩|🍗Backend🍖|🍗Frontend🍖|🍗Backend🍖|🍗Frontend🍖|🍗Frontend🍖|
 
 ## 🥞 skill stack
-<center>
-<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
-<img src="https://img.shields.io/badge/JAVASCRIPT-EEFF41?style=for-the-badge&logo=JAVASCRIPT&logoColor=black">
-<img src="https://img.shields.io/badge/CSS3-00E0FF?style=for-the-badge&logo=CSS3&logoColor=white">   
-<img src="https://img.shields.io/badge/SPRING-64DD17?style=for-the-badge&logo=SPRING&logoColor=white">   
-<img src="https://img.shields.io/badge/JAVA-3D5AFE?style=for-the-badge&logo=JAVA&logoColor=white">
-<img src="https://img.shields.io/badge/Vue.js-C6FF00?style=for-the-badge&logo=Vue.js&logoColor=white">   
-<img src="https://img.shields.io/badge/Docker-00B0FF?style=for-the-badge&logo=Docker&logoColor=white">   
-<img src="https://img.shields.io/badge/Kubernetes-3D5AFE?style=for-the-badge&logo=Kubernetes&logoColor=white">
-<img src="https://img.shields.io/badge/GIT-E65100?style=for-the-badge&logo=GIT&logoColor=white">   
-<img src="https://img.shields.io/badge/MARIADB-283593?style=for-the-badge&logo=MARIADB&logoColor=white">
-<img src="https://img.shields.io/badge/AMAZONAWS-424242?style=for-the-badge&logo=AMAZONAWS&logoColor=white">   
+## 프론트
+![image](https://user-images.githubusercontent.com/51963264/151294450-66afc357-0c6e-4519-a577-4a181408677a.png)
 
-</center>
+## 백엔드
+![image](https://user-images.githubusercontent.com/51963264/151294406-764f2f5a-d778-41b0-87d2-2f92421e07cd.png)
+
+
+
 
 
 ## :pencil: 규칙 
@@ -48,9 +42,26 @@
 세상에서 가장 가까운 아트페어 Art Tab이 여러분을 찾아 갑니다.
 ## 🍸 설계도
 
-[와이어프레임](https://www.figma.com/file/xUWjLV973Wbq847eZeXpIv/%EB%B0%98%EB%B0%98%EB%A7%90%EB%A7%88%EB%8B%88?node-id=0%3A1)   
-[ERD](https://www.erdcloud.com/d/9ReMzDmCvwzjdskPi)   
-[api 설계]()   
+[와이어프레임](https://www.figma.com/file/lfozAybsvjkkbNYzhUdi4l/%EB%B0%98%EB%B0%98%EB%A7%90%EB%A7%88%EB%8B%88?node-id=0%3A1)   
+[ERD](https://www.erdcloud.com/d/gNfGpb3YLzHWH2cnw)   
+[api 설계](https://documenter.getpostman.com/view/5813163/UVXqFYVJ)   
 [회의 내용](https://haeinpark.notion.site/2-1-fdfb2b569362442ab99f07bb4a5aa04a)
 
 ## 🍳 git convention
+### 커밋할 때
+
+- **`feat`**: 새로운 기능 추가(a new feature)
+- **`fix`**: 버그 수정(a bug fix)
+- **`docs`**: 문서 수정(changes to documentation)
+- **`style`**: 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우 (formatting, missing semi colons, etc; no code change)
+- **`refactor`**: 코드 리팩토링(refactoring production code), 로직과 관계 없는 소스 코드 개선
+    - 불필요한 파일 및 코드 삭제
+    - 라우트 설정 파일 변경
+- **`test`**: 테스트 코드, 리펙토링 테스트 코드 추가(adding tests, refactoring test; no production code change)
+- **`chore`**: 빌드 업무 수정, 패키지 매니저 수정, 라이브러리, 환경 설정 파일(package.json, .config 등) 수정 등
+    - updating build tasks, package manager configs, etc; no production code change
+- `design`: CSS 등 사용자 UI 디자인 변경
+- `comment`: 필요한 주석 추가 및 변경
+- `rename`: 파일 또는 폴더명을 수정하거나 옮기는 작업만 수행한 경우
+- `remove`: 파일을 삭제하는 작업만 수행한 경우
+- `HOTFIX`: 급하게 치명적인 버그를 고쳐야 하는 경우
