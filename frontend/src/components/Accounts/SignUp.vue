@@ -65,6 +65,7 @@
 import { defineComponent } from "vue";
 import PageTitle from "@/components/Accounts/child/PageTitle.vue";
 import InputPassword from "@/components/Accounts/child/InputPassword.vue";
+import PV from "password-validator"; // 비밀번호 유효성 검사 라이브러리
 
 export default defineComponent({
   name: "SignUp",
@@ -76,6 +77,7 @@ export default defineComponent({
     return {
       email: "",
       password: "",
+      passwordSchema: new PV(),
       checkPwd: "",
       isShowPwd: false,
       agree: "",
@@ -85,8 +87,34 @@ export default defineComponent({
         password: false,
         checkPwd: false,
       },
-      isCompleted: true,
+      isCompleted: false,
     };
+  },
+  created() {
+    // 영문, 특수문자 포함 8자리 이상 50자리 이하
+    this.passwordSchema
+      .is()
+      .min(8)
+      .is()
+      .max(50)
+      .has()
+      .letters()
+      .has()
+      .symbols();
+  },
+  watch: {
+    email: function () {
+      this.checkForm();
+    },
+    password: function () {
+      this.checkForm();
+    },
+    checkPwd: function () {
+      this.checkForm();
+    },
+    agree: function () {
+      this.checkForm();
+    },
   },
   methods: {
     // 비밀번호 컴포넌트에 입력된 텍스트 가져오기
@@ -95,6 +123,32 @@ export default defineComponent({
     },
     updatecheckPwd(value: string) {
       this.checkPwd = value;
+    },
+    // 회원가입 폼 전체 유효성 검사 -> 완료 시 버튼 활성화
+    checkForm() {
+      if (this.validatePassword() && this.checkPassword() && this.agree) {
+        this.isCompleted = true;
+        return;
+      }
+      this.isCompleted = false;
+    },
+    // 비밀번호 유효성 검사
+    validatePassword(): boolean {
+      if (!this.passwordSchema.validate(this.password)) {
+        this.valid.password = true;
+        return false;
+      }
+      this.valid.password = false;
+      return true;
+    },
+    // 비밀번호와 비밀번호 확인 입력값의 일치 여부 체크
+    checkPassword(): boolean {
+      if (this.password !== this.checkPwd) {
+        this.valid.checkPwd = true;
+        return false;
+      }
+      this.valid.checkPwd = false;
+      return true;
     },
     // 다음 단계(이메일 인증)로 이동
     moveConfirmEmail() {
