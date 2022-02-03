@@ -82,12 +82,12 @@ public class ArtworkController {
     }
 
     // 작품 거래 이력
-    @GetMapping("/dealList")
-    @ApiOperation(value="작품 거래 이력 리스트 조회", notes="인자로 들어온 작품번호에 해당하는 작품의 거래이력을 가져오는 메소드")
-    public ResponseEntity<List<ArtworkDeal>> selectArtworkDeal(){
-        List<ArtworkDeal> list=new ArrayList<>();
-        return new ResponseEntity<>(list, HttpStatus.OK);
-    }
+//    @GetMapping("/dealList")
+//    @ApiOperation(value="작품 거래 이력 리스트 조회", notes="인자로 들어온 작품번호에 해당하는 작품의 거래이력을 가져오는 메소드")
+//    public ResponseEntity<List<ArtworkDeal>> selectArtworkDeal(){
+//        List<ArtworkDeal> list=new ArrayList<>();
+//        return new ResponseEntity<>(list, HttpStatus.OK);
+//    }
 
     @PostMapping("/deal")
     @ApiOperation(value="작품 거래 이력 등록", notes="작품 거래 이력을 등록하는 메소드")
