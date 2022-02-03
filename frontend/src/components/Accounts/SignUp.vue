@@ -63,8 +63,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import PageTitle from "@/components/Accounts/child/PageTitle.vue";
-import InputPassword from "@/components/Accounts/child/InputPassword.vue";
+import PageTitle from "@/components/accounts/child/PageTitle.vue";
+import InputPassword from "@/components/accounts/child/InputPassword.vue";
 import PV from "password-validator"; // 비밀번호 유효성 검사 라이브러리
 
 export default defineComponent({

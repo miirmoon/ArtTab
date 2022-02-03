@@ -33,7 +33,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import PageTitle from "@/components/Accounts/child/PageTitle.vue";
+import PageTitle from "@/components/accounts/child/PageTitle.vue";
 
 export default defineComponent({
   name: "InsertNickname",

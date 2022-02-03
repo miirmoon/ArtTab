@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import PageTitle from "@/components/Accounts/child/PageTitle.vue";
+import PageTitle from "@/components/accounts/child/PageTitle.vue";
 import { AlertCircleOutline } from "mdue";
 
 export default defineComponent({
