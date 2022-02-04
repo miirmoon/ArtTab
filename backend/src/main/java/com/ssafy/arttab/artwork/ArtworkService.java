@@ -41,7 +41,7 @@ public class ArtworkService {
     }
 
     @Transactional
-    public Optional<Artwork> update(int id, ArtworkUpdateRequestDto requestDto){
+    public Optional<Artwork> update(Long id, ArtworkUpdateRequestDto requestDto){
         Optional<Artwork> artwork = artworkRepository.findById(id); // 수정할 작품 찾기
         artwork.get().update(requestDto.getTitle(), requestDto.getDesc(), requestDto.getOriginFileName(),
                 requestDto.getSaveFileName(), requestDto.getSaveFolder(), requestDto.getSize(),
@@ -49,14 +49,14 @@ public class ArtworkService {
         return artwork;
     }
 
-    public Optional<Artwork> findByNo(int no){
-        Optional<Artwork> entity=artworkRepository.findById(no);
+    public Optional<Artwork> findByNo(Long id){
+        Optional<Artwork> entity=artworkRepository.findById(id);
 
         return entity;
     }
 
     @Transactional
-    public void delete(int id){
+    public void delete(Long id){
         Artwork artwork=artworkRepository.findById(id).get();
         artworkRepository.delete(artwork);
     }

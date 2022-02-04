@@ -37,7 +37,7 @@ public class ArtworkController {
 
     // 작품 수정 api
     @PutMapping("api/v1/artwork/{id}")
-    public ResponseEntity<String> update(@PathVariable("id") int id, @RequestBody ArtworkUpdateRequestDto artwork){
+    public ResponseEntity<String> update(@PathVariable("id") Long id, @RequestBody ArtworkUpdateRequestDto artwork){
 
         Optional<Artwork> artworkResult=artworkService.update(id, artwork);
 
@@ -49,8 +49,8 @@ public class ArtworkController {
 
     // 작품 삭제 api
     @DeleteMapping("api/v1/artwork/{no}")
-    public void deleteArtwork(@PathVariable("no") int no){
-        artworkService.delete(no);
+    public void deleteArtwork(@PathVariable("no") Long id){
+        artworkService.delete(id);
     }
 
 
