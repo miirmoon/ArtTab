@@ -26,7 +26,7 @@ public class CommentController {
         return commentService.insert(id, requestDto);
     }
 
-    @PutMapping("/api/v1/artwork/{id}/comment/{commentId}")
+    @PutMapping("/api/v1/artwork/comment/{commentId}")
     public Long updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateRequestDto requestDto) {
         return commentService.update(commentId, requestDto);
     }
