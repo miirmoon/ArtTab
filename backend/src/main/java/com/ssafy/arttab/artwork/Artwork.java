@@ -30,7 +30,7 @@ public class Artwork {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id; // 작품 식별번호
+    private Long id; // 작품 식별번호
 
     @ManyToOne
     private Member writer; // 작성자

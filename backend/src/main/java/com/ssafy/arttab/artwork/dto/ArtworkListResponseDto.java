@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
 
 public class ArtworkListResponseDto {
 
-    private int memberId;
+    private Long memberId;
     private String memberNickname;
-    private int artworkId; // 작품 식별번호
+    private Long artworkId; // 작품 식별번호
     private String artworkTitle; // 작품 제목
     private LocalDateTime artworkRegdate; // 작성일
     private String saveFileName; // 서버에 저장된 파일 이름

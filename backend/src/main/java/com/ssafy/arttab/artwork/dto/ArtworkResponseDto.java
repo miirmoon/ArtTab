@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 public class ArtworkResponseDto {
 
-    private int writerId;
+    private Long writerId;
     private String title;
     private String desc;
     private LocalDateTime regdate;
