@@ -1,7 +1,5 @@
 package com.ssafy.arttab.comment;
 
-import com.ssafy.arttab.artwork.comment.Comment;
-import com.ssafy.arttab.artwork.comment.CommentRepository;
 import org.junit.After;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
