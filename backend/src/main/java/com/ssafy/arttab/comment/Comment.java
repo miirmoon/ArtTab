@@ -32,8 +32,10 @@ public class Comment extends BaseTimeEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Artwork artwork;
 
-    @OneToOne
+    @JsonIgnore
+    @ManyToOne
     @JoinColumn(name = "member_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
     @Builder
