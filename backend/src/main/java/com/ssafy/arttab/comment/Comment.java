@@ -1,8 +1,8 @@
 package com.ssafy.arttab.comment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ssafy.arttab.BaseTimeEntity;
 import com.ssafy.arttab.artwork.Artwork;
+import com.ssafy.arttab.BaseTimeEntity;
 import com.ssafy.arttab.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;

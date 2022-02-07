@@ -3,7 +3,6 @@ package com.ssafy.arttab.artwork;
 import com.ssafy.arttab.artwork.dto.ArtworkFileDto;
 import com.ssafy.arttab.artwork.dto.ArtworkListResponseDto;
 import com.ssafy.arttab.artwork.dto.ArtworkUpdateRequestDto;
-import com.ssafy.arttab.member.MemberRepository;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
