@@ -20,7 +20,7 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/api/v1/member")
 @Api("멤버 컨트롤러")
 public class MemberController {
 
