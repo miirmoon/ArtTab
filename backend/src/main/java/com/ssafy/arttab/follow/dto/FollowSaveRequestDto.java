@@ -1,7 +1,7 @@
 package com.ssafy.arttab.follow.dto;
 
 import com.ssafy.arttab.follow.Follow;
-import com.ssafy.arttab.member.dto.Memberdto;
+import com.ssafy.arttab.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class FollowSaveRequestDto {
         this.followeeId = followeeId;
     }
 
-    public Follow toEntity(Memberdto follower, Memberdto followee){
+    public Follow toEntity(Member follower, Member followee){
         return Follow.builder()
                 .follower(follower)
                 .followee(followee)

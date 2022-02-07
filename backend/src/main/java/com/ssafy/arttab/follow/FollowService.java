@@ -1,8 +1,8 @@
 package com.ssafy.arttab.follow;
 
 import com.ssafy.arttab.follow.dto.FollowSaveRequestDto;
-import com.ssafy.arttab.member.dto.Memberdto;
-import com.ssafy.arttab.member.MemberRepository;
+import com.ssafy.arttab.member.domain.Member;
+import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +21,9 @@ public class FollowService {
      */
     @Transactional
     public Long insert(FollowSaveRequestDto requestDto) {
-        Memberdto follower = memberRepository.findById(requestDto.getFollowerId())
+        Member follower = memberRepository.findById(requestDto.getFollowerId())
                 .orElseThrow(IllegalArgumentException::new);
-        Memberdto followee = memberRepository.findById(requestDto.getFolloweeId())
+        Member followee = memberRepository.findById(requestDto.getFolloweeId())
                 .orElseThrow(IllegalArgumentException::new);
         return followRepository.save(requestDto.toEntity(follower, followee)).getId();
     }
@@ -34,9 +34,9 @@ public class FollowService {
      */
     @Transactional
     public void delete(FollowSaveRequestDto requestDto) {
-        Memberdto follower = memberRepository.findById(requestDto.getFollowerId())
+        Member follower = memberRepository.findById(requestDto.getFollowerId())
                 .orElseThrow(IllegalArgumentException::new);
-        Memberdto followee = memberRepository.findById(requestDto.getFolloweeId())
+        Member followee = memberRepository.findById(requestDto.getFolloweeId())
                 .orElseThrow(IllegalArgumentException::new);
 
         followRepository.unFollow(follower.getId(), followee.getId());

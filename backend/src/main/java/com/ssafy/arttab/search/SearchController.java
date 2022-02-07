@@ -3,7 +3,7 @@ package com.ssafy.arttab.search;
 import com.ssafy.arttab.artwork.ArtworkRepository;
 import com.ssafy.arttab.artwork.ArtworkService;
 import com.ssafy.arttab.artwork.dto.ArtworkListResponseDto;
-import com.ssafy.arttab.member.MemberRepository;
+import com.ssafy.arttab.member.repository.MemberRepository;
 import com.ssafy.arttab.search.dto.SearchArtworkListResponseDto;
 import com.ssafy.arttab.search.dto.SearchMemberListResponseDto;
 import lombok.RequiredArgsConstructor;

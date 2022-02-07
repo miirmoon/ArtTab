@@ -4,7 +4,7 @@ package com.ssafy.arttab.search;
 import com.ssafy.arttab.artwork.Artwork;
 import com.ssafy.arttab.artwork.ArtworkRepository;
 import com.ssafy.arttab.follow.FollowRepository;
-import com.ssafy.arttab.member.dto.Memberdto;
+import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import com.ssafy.arttab.search.dto.SearchArtworkListResponseDto;
 import com.ssafy.arttab.search.dto.SearchMemberListResponseDto;
@@ -34,10 +34,10 @@ public class SearchService {
 
     @Transactional
     public List<SearchMemberListResponseDto> selectMemberList(String nickname){
-        List<Memberdto> memberdtoList = memberRepository.findAllByNickname(nickname);
+        List<Member> memberdtoList = memberRepository.findAllByNickname(nickname);
         List<SearchMemberListResponseDto> responseDtos = new ArrayList<>();
 
-        for (Memberdto memberdto : memberdtoList) {
+        for (Member memberdto : memberdtoList) {
             List<Artwork> artworkList = artworkRepository.findAllByMemberId(memberdto.getId()) ;
             int artworkCnt = artworkList.size();
             int followCnt = followRepository.findAllFollowCnt(memberdto.getId());

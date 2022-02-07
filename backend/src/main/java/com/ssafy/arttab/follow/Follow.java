@@ -1,6 +1,6 @@
 package com.ssafy.arttab.follow;
 
-import com.ssafy.arttab.member.dto.Memberdto;
+import com.ssafy.arttab.member.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,14 +18,14 @@ public class Follow {
 
     @ManyToOne
     @JoinColumn(name = "follower")
-    private Memberdto follower;
+    private Member follower;
 
     @ManyToOne
     @JoinColumn(name = "followee")
-    private Memberdto followee;
+    private Member followee;
 
     @Builder
-    public Follow(Memberdto follower, Memberdto followee) {
+    public Follow(Member follower, Member followee) {
         this.follower = follower;
         this.followee = followee;
     }
