@@ -1,15 +1,13 @@
 package com.ssafy.arttab.artwork;
 
-
+import com.ssafy.arttab.domain.gallery.GalleryItem;
 import com.ssafy.arttab.member.Member;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @packageName : com.ssafy.arttab.artwork
@@ -23,6 +21,7 @@ import java.time.LocalDateTime;
  * @description :
  **/
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @ToString
@@ -34,6 +33,9 @@ public class Artwork {
 
     @ManyToOne
     private Member writer; // 작성자
+
+    @OneToMany(mappedBy="artwork", cascade = CascadeType.REMOVE)
+    private List<GalleryItem> galleryItemList; // 작품을 포함하는 갤러리아이템 null처리
 
     @Column(length = 30)
     private String title; // 작품 이름
@@ -64,31 +66,15 @@ public class Artwork {
     private double height; // 작품 세로 크기
 
     @Builder
-    public Artwork (Member writer, String title, String desc, String originFileName, String saveFileName,
-                    String saveFolder, int size, double width, double height){
-        this.writer=writer;
-        this.title=title;
-        this.desc=desc;
-        this.regdate=LocalDateTime.now();
-        this.originFileName=originFileName;
-        this.saveFileName=saveFileName;
-        this.saveFolder=saveFolder;
-        this.size=size;
-        this.width=width;
-        this.height=height;
-    }
-
-    public void update(String title, String desc, String originFileName, String saveFileName,
-                       String saveFolder, int size, double width, double height){
-        this.title=title;
-        this.desc=desc;
-        this.regdate=LocalDateTime.now();
-        this.originFileName=originFileName;
-        this.saveFileName=saveFileName;
-        this.saveFolder=saveFolder;
-        this.size=size;
-        this.width=width;
-        this.height=height;
+    public Artwork(Member writer, List<GalleryItem> galleryItemList, String title, String desc, LocalDateTime regdate, String originFileName, String saveFileName, String saveFolder) {
+        this.writer = writer;
+        this.galleryItemList = galleryItemList; // 생성할 때 null로 만들기. 수정할 때는 닉네임으로 조회해와서 변경할 값을 set한 다음 save
+        this.title = title;
+        this.desc = desc;
+        this.regdate = regdate;
+        this.originFileName = originFileName;
+        this.saveFileName = saveFileName;
+        this.saveFolder = saveFolder;
     }
 
 }

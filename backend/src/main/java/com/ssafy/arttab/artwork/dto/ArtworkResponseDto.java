@@ -14,20 +14,15 @@ public class ArtworkResponseDto {
     private String originFileName;
     private String saveFileName;
     private String saveFolder;
-    private int size;
-    private double width;
-    private double height;
 
     @Builder
     public ArtworkResponseDto (Artwork entity){
         this.writerId=entity.getWriter().getId();
         this.title=entity.getTitle();
         this.desc=entity.getDesc();
+        this.regdate=entity.getRegdate();
         this.originFileName=entity.getOriginFileName();
         this.saveFileName=entity.getSaveFileName();
         this.saveFolder=entity.getSaveFolder();
-        this.size=entity.getSize();
-        this.width=entity.getWidth();
-        this.height=entity.getHeight();
     }
 }
