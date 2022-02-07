@@ -2,7 +2,6 @@ package com.ssafy.arttab.member.repository;
 
 
 import com.ssafy.arttab.member.domain.Member;
-import com.ssafy.arttab.member.dto.Memberdto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,7 +21,7 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
     Member findMemberByEmail(String email);
 
 
-    Memberdto findMemberByNickname(String nickname);
+    Member findMemberByNickname(String nickname);
 //    List<GalleryItem> findGalleryItemById(int id);
 
     /***
@@ -31,5 +30,5 @@ public interface MemberRepository extends JpaRepository<Member,Long> {
      * @return 닉네임으로 조회한 회원 리스트 반환
      */
     @Query(value = "SELECT * FROM member WHERE nickname LIKE %:nickname%", nativeQuery = true)
-    List<Memberdto> findAllByNickname(@Param("nickname") String nickname);
+    List<Member> findAllByNickname(@Param("nickname") String nickname);
 }
