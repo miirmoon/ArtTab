@@ -4,6 +4,7 @@ package com.ssafy.arttab.member;
 import com.ssafy.arttab.exception.member.DuplicateException;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.dto.LoginEmail;
+import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
 import com.ssafy.arttab.member.dto.request.IntroUpdateRequest;
 import com.ssafy.arttab.member.dto.request.MemberSaveRequest;
 import com.ssafy.arttab.member.dto.request.PasswordUpdateRequest;
