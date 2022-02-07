@@ -4,6 +4,7 @@ import com.ssafy.arttab.domain.gallery.GalleryItem;
 import com.ssafy.arttab.member.Member;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @ToString
+@EntityListeners(AuditingEntityListener.class) // 추가
 public class Artwork {
 
     @Id
@@ -53,17 +55,8 @@ public class Artwork {
     @Column(length=300)
     private String saveFileName; // 서버에 저장된 파일 이름
 
-    @Column(length = 50)
+    @Column(length = 300)
     private String saveFolder; // 저장된 폴더 경로
-
-    @Column
-    private int size; // 파일 크기
-
-    @Column
-    private double width; // 작품 가로 크기
-
-    @Column
-    private double height; // 작품 세로 크기
 
     @Builder
     public Artwork(Member writer, List<GalleryItem> galleryItemList, String title, String desc, LocalDateTime regdate, String originFileName, String saveFileName, String saveFolder) {

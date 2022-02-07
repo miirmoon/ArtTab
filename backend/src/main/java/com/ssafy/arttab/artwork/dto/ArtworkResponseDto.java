@@ -2,9 +2,11 @@ package com.ssafy.arttab.artwork.dto;
 
 import com.ssafy.arttab.artwork.Artwork;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 public class ArtworkResponseDto {
 
     private Long writerId;

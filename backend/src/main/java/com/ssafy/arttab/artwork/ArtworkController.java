@@ -115,7 +115,7 @@ public class ArtworkController {
 
     // id에 해당하는 작품 조회
     @GetMapping("api/v1/artwork/{id}")
-    public ResponseEntity<ArtworkResponseDto> findByNo(@PathVariable("id") Long id){
+    public ResponseEntity<ArtworkResponseDto> findById(@PathVariable("id") Long id){
         Optional<Artwork> artwork = artworkService.findByNo(id);
 
         if(artwork.isEmpty()) // 조회된 값이 없을 때
