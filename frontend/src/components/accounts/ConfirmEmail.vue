@@ -13,12 +13,12 @@
       이메일 인증 후 그림 감상과 등록이 가능합니다.
     </p>
     <input
-      type="number"
+      type="text"
       id="authNum"
       class="input-text"
       name="authNum"
       v-model="authNum"
-      placeholder="인증코드 00자리 입력"
+      placeholder="인증코드 입력"
       autocapitalize="none"
     />
     <span class="alert" v-show="valid.authNum"
