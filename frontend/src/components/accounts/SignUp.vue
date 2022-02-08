@@ -10,7 +10,7 @@
       id="email"
       class="input-text"
       name="email"
-      v-model="email"
+      v-model="account.email"
       autocapitalize="none"
     />
     <span class="alert" v-show="valid.emailType"
@@ -23,7 +23,7 @@
     <!-- 비밀번호 입력 -->
     <label for="password" class="label-text">비밀번호</label>
     <input-password
-      :password="password"
+      :password="account.password"
       :placetext="'영문, 특수문자 포함 8자리 이상'"
       id="password"
       @inputVal="updatePassword"
@@ -65,7 +65,9 @@
 import { defineComponent } from "vue";
 import PageTitle from "@/components/accounts/child/PageTitle.vue";
 import InputPassword from "@/components/accounts/child/InputPassword.vue";
+import { validateEmail } from "@/utils/validation";
 import PV from "password-validator"; // 비밀번호 유효성 검사 라이브러리
+import LoginInfo from "@/types/LoginInfo";
 
 export default defineComponent({
   name: "SignUp",
@@ -75,8 +77,10 @@ export default defineComponent({
   },
   data() {
     return {
-      email: "",
-      password: "",
+      account: {
+        email: "",
+        password: "",
+      } as LoginInfo,
       passwordSchema: new PV(),
       checkPwd: "",
       isShowPwd: false,
@@ -103,14 +107,14 @@ export default defineComponent({
       .symbols();
   },
   watch: {
-    email: function () {
-      this.checkForm();
+    "account.email": function () {
+      this.checkEmail();
     },
-    password: function () {
-      this.checkForm();
+    "account.password": function () {
+      this.validatePassword();
     },
     checkPwd: function () {
-      this.checkForm();
+      this.checkPassword();
     },
     agree: function () {
       this.checkForm();
@@ -119,40 +123,63 @@ export default defineComponent({
   methods: {
     // 비밀번호 컴포넌트에 입력된 텍스트 가져오기
     updatePassword(value: string) {
-      this.password = value;
+      this.account.password = value;
     },
     updatecheckPwd(value: string) {
       this.checkPwd = value;
     },
     // 회원가입 폼 전체 유효성 검사 -> 완료 시 버튼 활성화
     checkForm() {
-      if (this.validatePassword() && this.checkPassword() && this.agree) {
+      if (
+        !this.valid.emailType &&
+        !this.valid.email &&
+        !this.valid.password &&
+        !this.valid.checkPwd &&
+        this.agree
+      ) {
         this.isCompleted = true;
         return;
       }
       this.isCompleted = false;
     },
+    // 이메일 형식 및 중복 검사
+    checkEmail() {
+      // 이메일 형식 검사
+      if (!validateEmail(this.account.email)) {
+        this.valid.emailType = true;
+        this.valid.email = false;
+        return;
+      }
+      this.valid.emailType = false;
+      // 이메일 중복 검사
+      if (!this.valid.email) {
+        this.checkForm();
+      }
+    },
     // 비밀번호 유효성 검사
-    validatePassword(): boolean {
-      if (!this.passwordSchema.validate(this.password)) {
+    validatePassword() {
+      if (!this.passwordSchema.validate(this.account.password)) {
         this.valid.password = true;
-        return false;
+        return;
       }
       this.valid.password = false;
-      return true;
+      this.checkForm();
     },
     // 비밀번호와 비밀번호 확인 입력값의 일치 여부 체크
-    checkPassword(): boolean {
-      if (this.password !== this.checkPwd) {
+    checkPassword() {
+      if (this.account.password !== this.checkPwd) {
         this.valid.checkPwd = true;
-        return false;
+        return;
       }
       this.valid.checkPwd = false;
-      return true;
+      this.checkForm();
     },
     // 다음 단계(이메일 인증)로 이동
     moveConfirmEmail() {
-      this.$router.push({ name: "ConfirmEmail" });
+      this.$router.push({
+        name: "ConfirmEmail",
+        params: { email: this.account.email },
+      });
     },
   },
 });
