@@ -160,7 +160,6 @@ export default defineComponent({
       // 이메일 중복 검사
       await AccountsAPI.checkEmail(this.account.email).then(
         (res: ResponseData) => {
-          console.log(res.data);
           if (res.data === "success") {
             this.valid.email = false;
           } else {
@@ -197,24 +196,12 @@ export default defineComponent({
         if (res.data === "success") {
           // store에 이메일 저장 및 메일 전송 후 다음 단계 페이지로 이동
           this.storeEmail(this.account.email);
-          this.sendEmail();
 
           this.$router.push({
             name: "ConfirmEmail",
           });
-        }
-        if (res.data === "fail") {
+        } else {
           alert("가입 중 오류가 발생했습니다. 다시 시도해주시기 바랍니다.");
-        }
-      });
-    },
-    // 이메일 전송
-    sendEmail() {
-      AccountsAPI.sendEmail(this.account.email).then((res: ResponseData) => {
-        if (res.data !== "success") {
-          alert(
-            "인증 메일 전송 중 오류가 발생했습니다. 이메일 재전송 버튼을 통해 다시 시도해주시기 바랍니다."
-          );
         }
       });
     },

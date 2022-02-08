@@ -4,6 +4,7 @@ import NewPassword from "@/types/NewPassword";
 
 class AccountsAPI {
   // 회원가입: DB입력 성공여부에 따라 'success' 또는 'fail' 문자열 반환
+  // 회원 등록 후 이메일(인증번호) 전송 프로세스 포함
   signUp(account: LoginInfo) {
     return api.post(`/member/signup`, JSON.stringify(account));
   }
