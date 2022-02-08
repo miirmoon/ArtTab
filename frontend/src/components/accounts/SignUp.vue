@@ -66,8 +66,13 @@ import { defineComponent } from "vue";
 import PageTitle from "@/components/accounts/child/PageTitle.vue";
 import InputPassword from "@/components/accounts/child/InputPassword.vue";
 import { validateEmail } from "@/utils/validation";
+import AccountsAPI from "@/apis/accountsAPI";
+import ResponseData from "@/types/ResponseData";
 import PV from "password-validator"; // 비밀번호 유효성 검사 라이브러리
 import LoginInfo from "@/types/LoginInfo";
+import { mapActions } from "vuex";
+
+const accountsStore = "accountsStore";
 
 export default defineComponent({
   name: "SignUp",
@@ -121,6 +126,7 @@ export default defineComponent({
     },
   },
   methods: {
+    ...mapActions(accountsStore, ["storeEmail"]),
     // 비밀번호 컴포넌트에 입력된 텍스트 가져오기
     updatePassword(value: string) {
       this.account.password = value;
@@ -143,7 +149,7 @@ export default defineComponent({
       this.isCompleted = false;
     },
     // 이메일 형식 및 중복 검사
-    checkEmail() {
+    async checkEmail() {
       // 이메일 형식 검사
       if (!validateEmail(this.account.email)) {
         this.valid.emailType = true;
@@ -152,6 +158,16 @@ export default defineComponent({
       }
       this.valid.emailType = false;
       // 이메일 중복 검사
+      await AccountsAPI.checkEmail(this.account.email).then(
+        (res: ResponseData) => {
+          console.log(res.data);
+          if (res.data === "success") {
+            this.valid.email = false;
+          } else {
+            this.valid.email = true;
+          }
+        }
+      );
       if (!this.valid.email) {
         this.checkForm();
       }
@@ -174,11 +190,32 @@ export default defineComponent({
       this.valid.checkPwd = false;
       this.checkForm();
     },
-    // 다음 단계(이메일 인증)로 이동
+    // 가입 처리 후 다음 단계(이메일 인증)로 이동
     moveConfirmEmail() {
-      this.$router.push({
-        name: "ConfirmEmail",
-        params: { email: this.account.email },
+      // 회원가입 처리
+      AccountsAPI.signUp(this.account).then((res: ResponseData) => {
+        if (res.data === "success") {
+          // store에 이메일 저장 및 메일 전송 후 다음 단계 페이지로 이동
+          this.storeEmail(this.account.email);
+          this.sendEmail();
+
+          this.$router.push({
+            name: "ConfirmEmail",
+          });
+        }
+        if (res.data === "fail") {
+          alert("가입 중 오류가 발생했습니다. 다시 시도해주시기 바랍니다.");
+        }
+      });
+    },
+    // 이메일 전송
+    sendEmail() {
+      AccountsAPI.sendEmail(this.account.email).then((res: ResponseData) => {
+        if (res.data !== "success") {
+          alert(
+            "인증 메일 전송 중 오류가 발생했습니다. 이메일 재전송 버튼을 통해 다시 시도해주시기 바랍니다."
+          );
+        }
       });
     },
   },
