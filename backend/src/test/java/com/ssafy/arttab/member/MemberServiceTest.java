@@ -1,7 +1,7 @@
 package com.ssafy.arttab.member;
 
 import com.ssafy.arttab.exception.member.DuplicateException;
-import com.ssafy.arttab.exception.member.NoSuchMemberExcption;
+import com.ssafy.arttab.exception.member.NoSuchMemberException;
 import com.ssafy.arttab.exception.member.PasswordMismatchException;
 import com.ssafy.arttab.member.dto.LoginEmail;
 import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
@@ -130,9 +130,9 @@ class MemberServiceTest {
     void selectAuthNum(){
         memberService.saveMember(member);
         var mem = memberRepository.findByEmail(member.getEmail())
-                .orElseThrow(NoSuchMemberExcption::new);
+                .orElseThrow(NoSuchMemberException::new);
         var auth  = mailAuthRepogitory.findById(mem.getId())
-                .orElseThrow(NoSuchMemberExcption::new);
+                .orElseThrow(NoSuchMemberException::new);
         LoginEmail loginEmail = new LoginEmail();
         var authNumCheckRequest = new AuthNumCheckRequest("tph01198@naver.com",auth.getId());
         memberService.selectMailAuthId(authNumCheckRequest);
