@@ -46,7 +46,7 @@ public class Member {
     private List<Like> likeList;
 
     @Builder
-    public Member(String nickname, String password, String email, String intro, int auth, List<GalleryItem> galleryItemList, List<Artwork> artworkList) {
+    public Member(String nickname, String password, String email, String intro, int auth, List<GalleryItem> galleryItemList, List<Artwork> artworkList, String saveFolder) {
         this.nickname = nickname;
         this.password = password;
         this.email = email;
@@ -54,6 +54,7 @@ public class Member {
         this.auth = auth;
         this.galleryItemList = galleryItemList;
         this.artworkList = artworkList;
+        this.saveFolder=saveFolder;
     }
 
     public void updateNickname(String nickname) {
@@ -71,4 +72,6 @@ public class Member {
     public void updateAuth() {
         this.auth = 1;
     }
+
+    public void updateSaveFolder(String saveFolder) {this.saveFolder=saveFolder;}
 }
