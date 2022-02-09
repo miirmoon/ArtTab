@@ -56,9 +56,13 @@ public class MemberService {
         //비밀번호 암호화
         var password = BCrypt.hashpw(memberSaveRequest.getPassword(),BCrypt.gensalt());
 
+        // 프로필 사진 기본 이미지로 설정
+        String defaultSaveFolder=System.getProperty("user.dir") + "\\profile\\default.jpg";
+
         Member member = Member.builder()
                 .email(memberSaveRequest.getEmail())
                 .password(password)
+                .saveFolder(defaultSaveFolder)
                 .build();
 
         try{
@@ -245,5 +249,20 @@ public class MemberService {
                 .orElseThrow(NoSuchMemberException::new);
 
         memberRepository.delete(member);
+    }
+
+    // 해당 이메일의 회원이 기존에 등록해둔 saveFolder 리턴
+    public String getParentFolder(String email){
+
+        var member=memberRepository.findByEmail(email).orElseThrow();
+        return member.getSaveFolder();
+
+    }
+
+    // saveFolder 수정
+    @Transactional
+    public void updateSaveFolder(final LoginEmail loginEmail, String saveFolder){
+        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow();
+        member.updateSaveFolder(saveFolder);
     }
 }
