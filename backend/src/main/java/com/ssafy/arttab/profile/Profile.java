@@ -22,6 +22,7 @@ public class Profile extends BaseTimeEntity {
     private Long id;
 
     @OneToOne
+    @JoinColumn(name="member")
     private Member member; // 프로필 주인
 
     @Column

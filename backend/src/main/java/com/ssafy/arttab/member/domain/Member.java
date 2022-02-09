@@ -1,6 +1,7 @@
 package com.ssafy.arttab.member.domain;
 import com.ssafy.arttab.gallery.GalleryItem;
 import com.ssafy.arttab.artwork.Artwork;
+import com.ssafy.arttab.profile.Profile;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,6 +34,9 @@ public class Member {
 
     @OneToMany(mappedBy="writer", cascade = CascadeType.REMOVE)
     private List<Artwork> artworkList; // 회원이 만든 작품 리스트
+
+    @Column
+    private String saveFolder; // 회원의 프로필 사진 경로
 
     @Builder
     public Member(String nickname, String password, String email, String intro, int auth, List<GalleryItem> galleryItemList, List<Artwork> artworkList) {
