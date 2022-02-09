@@ -7,8 +7,8 @@ import com.ssafy.arttab.member.domain.MailAuth;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.dto.LoginEmail;
 import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
-import com.ssafy.arttab.member.dto.request.MemberSaveRequest;
 import com.ssafy.arttab.member.dto.request.IntroUpdateRequest;
+import com.ssafy.arttab.member.dto.request.MemberSaveRequest;
 import com.ssafy.arttab.member.dto.request.PasswordUpdateRequest;
 import com.ssafy.arttab.member.dto.response.MemberInfoResponse;
 import com.ssafy.arttab.member.repository.MailAuthRepogitory;
@@ -18,7 +18,6 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -111,9 +110,11 @@ public class MemberService {
 
 
         // DB 확인
-        Member member = memberRepository.findMemberByEmail(email);
+        Member member = memberRepository.findMemberByEmail(email)
+                .orElseThrow(NoSuchMemberException::new);
 
-        Optional<MailAuth> mailAuth = mailAuthRepogitory.findById(member.getId());
+        var mailAuth = mailAuthRepogitory.findById(member.getId());
+
 
         // DB에 있으면 변경, 없으면 등록
         mailAuth.ifPresentOrElse(selectmailAuth ->{

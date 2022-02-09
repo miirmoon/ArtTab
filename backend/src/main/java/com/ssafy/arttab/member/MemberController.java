@@ -34,7 +34,7 @@ public class MemberController {
         try{
             memberService.saveMember(memberSaveRequest);
         }catch (Exception e){
-            message ="fail";
+            message =e.getMessage();
         }
 
         return new ResponseEntity<String>(message, HttpStatus.OK);
@@ -44,12 +44,10 @@ public class MemberController {
     @PostMapping("/email")
     public ResponseEntity<String> sendEmail(@Valid @RequestBody LoginEmail loginEmail) {
         String message = "success";
-        try{
+
             memberService.SendNumtoEmail(loginEmail.getEmail());
 
-        }catch (Exception e){
-            message ="fail";
-        }
+
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
@@ -73,7 +71,7 @@ public class MemberController {
             memberService.addNickname(loginEmail,nickname);
 
         }catch (Exception e){
-            message ="fail";
+            message =e.getMessage();
         }
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
@@ -112,6 +110,7 @@ public class MemberController {
 
         return new ResponseEntity<String>(message,HttpStatus.OK);
     }
+
     @ApiOperation(value = "비밀번호 수정", notes = "비밀번호 DB수정 성공여부에 따라 'success 또는 'fail' 문자열을 반환한다.", response = String.class)
     @PutMapping("/me/password")
     public ResponseEntity<String> updatePassword(@RequestBody LoginEmail loginEmail, PasswordUpdateRequest passwordUpdateRequest) {
@@ -126,7 +125,6 @@ public class MemberController {
         return ResponseEntity.ok().body(memberInfoResponse);
     }
 
-
     @ApiOperation(value = "회원삭제", notes = "회원번호로 DB 삭제 성공여부에 따라 'success' 또는 'fail' 문자열을 반환한다.", response = String.class)
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteMember(LoginEmail loginEmail) {
@@ -140,6 +138,7 @@ public class MemberController {
         memberService.updateMember(loginEmail,introUpdateRequest);
         return ResponseEntity.ok().build();
     }
+
     @ApiOperation(value = "비밀번호 찾기")
     @PutMapping("/password")
     public ResponseEntity<String> findPassword(String email){
