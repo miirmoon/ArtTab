@@ -259,10 +259,10 @@ public class MemberService {
 
     }
 
-    // saveFolder 수정
+    // saveFolder 수정: 이메일에 해당하는 프로필 사진 수정
     @Transactional
     public void updateSaveFolder(final LoginEmail loginEmail, String saveFolder){
-        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow();
+        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow(); 
         member.updateSaveFolder(saveFolder);
     }
 }
