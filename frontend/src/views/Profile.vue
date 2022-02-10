@@ -13,14 +13,12 @@ import ProfileInfo from "../components/profile/ProfileInfo.vue";
 import Gallery from "../components/profile/Gallery.vue";
 import ProfileArtwork from "../components/profile/ProfileArtwork.vue";
 export default defineComponent({
-  components : {
+  components: {
     ProfileInfo,
     Gallery,
     ProfileArtwork,
-  }
-})
+  },
+});
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
