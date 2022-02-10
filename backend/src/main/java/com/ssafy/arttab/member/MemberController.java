@@ -13,6 +13,7 @@ import com.ssafy.arttab.member.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -181,17 +182,17 @@ public class MemberController {
         LocalDateTime time = LocalDateTime.now();
         String originFileName = file.getOriginalFilename();
         String saveFileName = new MD5Generator(originFileName + time).toString();
-        String upperSavePath=System.getProperty("user.dir") + "\\profile"; // 프로필 폴더
-        String savePath = upperSavePath + "\\" +email; // 프로필 사진 주인 이메일
+        String upperSavePath="C:"+File.separator+"profile"; // 프로필 폴더
+        String savePath = upperSavePath + File.separator +email; // 프로필 사진 주인 이메일
 
         // profile 폴더가 없으면 폴더 생성
-//            if(!upperSavePath.isEmpty()){
-//                try{
-//                    new File(upperSavePath).mkdir();
-//                } catch(Exception e){
-//                    e.getStackTrace();
-//                }
-//            }
+            if(!upperSavePath.isEmpty()){
+                try{
+                    new File(upperSavePath).mkdir();
+                } catch(Exception e){
+                    e.getStackTrace();
+                }
+            }
 
         // profile 폴더 아래에 사용자 폴더 만들기
         if (!new File(savePath).exists()) {
