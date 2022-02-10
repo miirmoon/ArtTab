@@ -3,6 +3,7 @@ package com.ssafy.arttab.artwork;
 import com.ssafy.arttab.artwork.dto.ArtworkFileDto;
 import com.ssafy.arttab.artwork.dto.ArtworkListResponseDto;
 import com.ssafy.arttab.artwork.dto.ArtworkUpdateRequestDto;
+import com.ssafy.arttab.artwork.dto.FollowArtworkListResponseDto;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -94,5 +95,9 @@ public class ArtworkService {
         Artwork artwork=artworkRepository.findById(id).get();
         artworkRepository.delete(artwork);
     }
+
+//    public List<FollowArtworkListResponseDto> selectFolloweArtworkList(String nickname){
+//
+//    }
 
 }
