@@ -1,20 +1,26 @@
 <template>
   <div class="container">
-    <masonry-wall :items="artwork_list" :ssr-columns="1" :column-width="300" :gap="16">
+    <masonry-wall
+      :items="artwork_list"
+      :ssr-columns="1"
+      :column-width="300"
+      :gap="16"
+    >
       <template #default="{ item }">
         <div class="thumbnail-wrapper">
-          <img :src="item.image" :alt="`${item.id}`">
+          <img :src="item.image" :alt="`${item.id}`" />
           <div class="overlay">
             <div class="info">
-              <span style="color:white" class="artwork-title">작품제목 #{{item.id}}</span>
-              <span style="color:white" class="artwork-artist">{{item.artist}}</span>            
+              <span style="color: white" class="artwork-title"
+                >작품제목 #{{ item.id }}</span
+              >
+              <span style="color: white" class="artwork-artist">{{
+                item.artist
+              }}</span>
             </div>
             <div class="button-top-right">
-            <like-button
-              :liked="!valid"
-              @click="handleLike"
-              ></like-button>
-          </div>
+              <like-button :liked="!valid" @click="handleLike"></like-button>
+            </div>
           </div>
         </div>
       </template>
@@ -25,9 +31,9 @@
     <!-- loader -->
     <div class="scene">
       <div class="objects">
-          <div class="square"></div>
-          <div class="circle"></div>
-          <div class="triangle"></div>
+        <div class="square"></div>
+        <div class="circle"></div>
+        <div class="triangle"></div>
       </div>
       <div class="wizard">
         <div class="body"></div>
@@ -54,7 +60,6 @@
     <div class="progress"></div>
   </div>
 </template>
-
 
 <script lang="ts">
 import { defineComponent } from "vue";
@@ -96,8 +101,8 @@ export default defineComponent({
               // title: temp[i].title,
               artist: temp[i].author,
               image: temp[i].download_url,
-            })
-            console.log(artwork)
+            });
+            console.log(artwork);
           }
           // 이미지 로드 시간 때문에 함수 호출이 잦은 것 같은데 해결할 방법 없나?
           this.artwork_list = [...this.artwork_list, ...artwork];
@@ -122,9 +127,7 @@ export default defineComponent({
 });
 </script>
 
-
 <style scoped lang="scss">
-
 * {
   box-sizing: border-box;
 }
@@ -136,21 +139,21 @@ export default defineComponent({
   transition: 0.5s ease-in-out;
 
   & img {
-  max-width: 100%;
-  height: auto;
-  border: 1px solid $grey;
-  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+    max-width: 100%;
+    height: auto;
+    border: 1px solid $grey;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
   }
 
   &:hover {
-  transform: translateY(-3px);
-    & .button-top-right{
+    transform: translateY(-3px);
+    & .button-top-right {
       visibility: visible;
     }
     & .info {
-    color: white;
-    visibility: visible;
-    transform: translateY(0px);
+      color: white;
+      visibility: visible;
+      transform: translateY(0px);
     }
   }
 }
@@ -168,25 +171,25 @@ export default defineComponent({
   margin-top: 2rem;
 }
 
-.overlay{
-  position:absolute;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;   
-  z-index:2;
-  &:hover{
-  background: rgba(0, 0, 0, 0.6);
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  &:hover {
+    background: rgba(0, 0, 0, 0.6);
   }
 }
 
-.button-top-right{
+.button-top-right {
   position: absolute;
   top: 2px;
   right: 2px;
   z-index: 3;
   visibility: hidden;
-} 
+}
 /* Spinner Animation */
 
 $primary: #3f64ce;
@@ -821,5 +824,4 @@ body {
     width: 100%;
   }
 }
-
 </style>
