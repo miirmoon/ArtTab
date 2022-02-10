@@ -1,8 +1,8 @@
 <template>
   <div>
-    <button
-      :class="{ 'liked-color': liked }"
-    ><heart-outline></heart-outline></button>
+    <button :class="{ 'liked-color': liked }">
+      <heart-outline></heart-outline>
+    </button>
   </div>
 </template>
 
@@ -18,8 +18,8 @@ export default defineComponent({
   },
   components: {
     HeartOutline,
-  }
-})
+  },
+});
 </script>
 
 <style lang="scss" scoped>
@@ -31,5 +31,4 @@ button {
 .liked-color {
   color: $red;
 }
-
 </style>
