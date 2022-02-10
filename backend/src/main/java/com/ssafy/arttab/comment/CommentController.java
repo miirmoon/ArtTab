@@ -20,31 +20,47 @@ public class CommentController {
     private final CommentService commentService;
 
     @ApiOperation(value = "댓글 전체 조회",
-            notes = "작품번호로 댓글 전체 조회 성공여부에 따라 'success' 또는 'fail' 문자열을 반환한다.", response = String.class)
+            notes = "작품번호로 댓글 전체 조회 결과를 반환한다.")
     @GetMapping("/api/v1/artwork/{id}/comment")
     public ResponseEntity<List<CommentListResponseDto>> selectAllComment(@PathVariable Long id){
         var commentList = commentService.findAllDesc(id);
          if (commentList.isEmpty()){
-             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+             return new ResponseEntity<>(null, HttpStatus.OK);
          }
         return ResponseEntity.ok().body(commentList);
     }
 
-    @ApiOperation(value = "댓글 등록", notes = "DB에 댓글 등록 ")
+    @ApiOperation(value = "댓글 등록", notes = "DB에 댓글 등록 성공 여부에 따라 success 또는 fail을 반환한다.")
     @PostMapping("/api/v1/artwork/{id}/comment")
-    public Long insertComment(@PathVariable Long id, @RequestBody CommentSaveRequestDto requestDto){
-        return commentService.insert(id, requestDto);
+    public ResponseEntity<String> insertComment(@PathVariable Long id, @RequestBody CommentSaveRequestDto requestDto){
+        try{
+            commentService.insert(id, requestDto);
+            return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<String>(FAIL, HttpStatus.OK);
+        }
     }
 
-    @PutMapping("/api/v1/artwork/comment/{commentId}")
-    public Long updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateRequestDto requestDto) {
-        return commentService.update(commentId, requestDto);
+    @ApiOperation(value = "댓글 수정", notes = "DB에 댓글 번호로 수정 성공 여부에 따라 success 또는 fail을 반환한다.")
+    @PutMapping("/api/v1/comment/{commentId}")
+    public ResponseEntity<String> updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateRequestDto requestDto) {
+        try {
+            commentService.update(commentId, requestDto);
+            return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<String>(FAIL, HttpStatus.OK);
+        }
     }
 
-    @DeleteMapping("/api/v1/artwork/{id}/comment/{commentId}")
-    public Long deleteComment(@PathVariable Long commentId){
-        commentService.delete(commentId);
-        return commentId;
+    @ApiOperation(value = "댓글 삭제", notes = "DB에 댓글 번호로 ")
+    @DeleteMapping("/api/v1/comment/{commentId}")
+    public ResponseEntity<String> deleteComment(@PathVariable Long commentId){
+        try {
+            commentService.delete(commentId);
+            return new ResponseEntity<String>(SUCCESS, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<String>(FAIL, HttpStatus.OK);
+        }
     }
 
 }
