@@ -162,5 +162,10 @@ public class ArtworkController {
         artworkService.delete(id);
     }
 
+//    @GetMapping("api/v1/artwork/{nickname}/follow")
+//    public List<FollowArtworkListResponseDto> selectFollowArtworkList(@PathVariable("nickname") String nickname){
+//
+//    }
+
 }
 

@@ -1,6 +1,7 @@
 package com.ssafy.arttab.member;
 
 
+import com.ssafy.arttab.artwork.dto.MD5Generator;
 import com.ssafy.arttab.exception.member.DuplicateException;
 import com.ssafy.arttab.member.dto.LoginEmail;
 import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
@@ -15,9 +16,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import java.io.File;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
 @RestController
@@ -145,6 +151,67 @@ public class MemberController {
     public ResponseEntity<String> findPassword(String email){
         memberService.findPassword(email);
         return ResponseEntity.ok().body("success");
+    }
+
+    // 프로필 변경하기
+    @ApiOperation(value = "회원 정보 변경하기")
+    @PutMapping("api/v1/profile")
+    public ResponseEntity<String> insertProfile(@RequestPart("file") MultipartFile file,
+                                                @RequestParam("email") String email,
+                                                @RequestParam(value = "nickname", required = false) String nickname,
+                                                @RequestParam(value = "intro", required = false) String intro) throws IOException, NoSuchAlgorithmException {
+
+        // 닉네임 중복 체크
+        String message=null;
+        try{
+            memberService.MemberIdCheck(nickname);
+        }catch (DuplicateException e){
+            message= e.getMessage();
+        }
+
+        // 원래 프로필 사진 삭제하기
+        String parentSaveFolder=memberService.getParentFolder(email); // 이메일에 해당하는 사용자의 원래 프로필 사진
+        String defaultSaveFolder=System.getProperty("user.dir") + "\\profile\\default.jpg"; // 기존에 프로필 사진 설정하지 않았을 경우
+        if(!parentSaveFolder.equals(defaultSaveFolder)) { // 기본 이미지로 설정되어 있는 경우에는 삭제 안함
+            File parentFile=new File(parentSaveFolder);
+            parentFile.delete();
+        }
+
+        // 프로필 사진 저장하기
+        LocalDateTime time = LocalDateTime.now();
+        String originFileName = file.getOriginalFilename();
+        String saveFileName = new MD5Generator(originFileName + time).toString();
+        String upperSavePath=System.getProperty("user.dir") + "\\profile"; // 프로필 폴더
+        String savePath = upperSavePath + "\\" +email; // 프로필 사진 주인 이메일
+
+        // profile 폴더가 없으면 폴더 생성
+//            if(!upperSavePath.isEmpty()){
+//                try{
+//                    new File(upperSavePath).mkdir();
+//                } catch(Exception e){
+//                    e.getStackTrace();
+//                }
+//            }
+
+        // profile 폴더 아래에 사용자 폴더 만들기
+        if (!new File(savePath).exists()) {
+            try {
+                new File(savePath).mkdir();
+            } catch (Exception e) {
+                e.getStackTrace();
+            }
+        }
+
+        String saveFolder = savePath + "\\" + saveFileName;
+        file.transferTo(new File(saveFolder)); // 파일 저장
+
+        LoginEmail loginEmail=new LoginEmail(email);
+        memberService.addNickname(loginEmail, nickname); // 닉네임 변경
+        memberService.updateMember(loginEmail, new IntroUpdateRequest(intro)); // 자기소개 변경
+        memberService.updateSaveFolder(loginEmail, saveFolder);
+
+       return new ResponseEntity<>(message, HttpStatus.OK);
+
     }
 
 }
