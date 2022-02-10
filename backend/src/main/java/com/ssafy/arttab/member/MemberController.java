@@ -4,11 +4,9 @@ package com.ssafy.arttab.member;
 import com.ssafy.arttab.artwork.dto.MD5Generator;
 import com.ssafy.arttab.exception.member.DuplicateException;
 import com.ssafy.arttab.member.dto.LoginEmail;
-import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
-import com.ssafy.arttab.member.dto.request.IntroUpdateRequest;
-import com.ssafy.arttab.member.dto.request.MemberSaveRequest;
-import com.ssafy.arttab.member.dto.request.PasswordUpdateRequest;
+import com.ssafy.arttab.member.dto.request.*;
 import com.ssafy.arttab.member.dto.response.MemberInfoResponse;
+import com.ssafy.arttab.member.dto.response.ProfileInfoResponse;
 import com.ssafy.arttab.member.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -163,7 +161,7 @@ public class MemberController {
                                                 @RequestParam(value = "intro", required = false) String intro) throws IOException, NoSuchAlgorithmException {
 
         // 닉네임 중복 체크
-        String message=null;
+        String message="success";
         try{
             memberService.MemberIdCheck(nickname);
         }catch (DuplicateException e){
@@ -213,6 +211,14 @@ public class MemberController {
 
        return new ResponseEntity<>(message, HttpStatus.OK);
 
+    }
+
+    @ApiOperation(value="회원 프로필 정보 리턴하기")
+    @GetMapping("/profile")
+    public ResponseEntity<ProfileInfoResponse> selectProfileInfo(@RequestParam("loginEmail") String loginEmail, @RequestParam("profileMemberEmail") String profileMemberEmail){
+
+        ProfileInfoResponse result = memberService.getProfileInfo(loginEmail, profileMemberEmail);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 }
