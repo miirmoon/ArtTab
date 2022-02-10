@@ -35,9 +35,9 @@ public class CommentService {
 
     @Transactional
     public List<CommentListResponseDto> findAllDesc(Long id) {
-        return commentRepository.findAllDesc(id).stream()
-                .map(CommentListResponseDto::new)
-                .collect(Collectors.toList());
+        var commetList = commentRepository.findAllDesc(id);
+
+        return
     }
 
     @Transactional
