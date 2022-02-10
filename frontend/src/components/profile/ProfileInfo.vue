@@ -1,37 +1,37 @@
 <template>
   <!-- Modal -->
-    <transition name="fade" appear>
-      <div class="overlay" v-if="isOpen==true" @click="closeEditModal"></div>
-    </transition>
-    <transition
-      mode="out-in" 
-      enter-active-class="animate__animated animate__fadeInUp"
-      leave-active-class="animate__animated animate__fadeOutDown">
-      <div class="modal" v-if="isOpen==true">
-        <h2>내 정보 수정</h2>
-        <div class="profile-image">
-          <img src="https://via.placeholder.com/150/92c952">
-        </div>
-        <div>
-          <button class="change-profile-pic-btn" @click="changeProfilePic">프로필 사진 변경</button>
-          <label for="nickname" class="label-text">닉네임</label>
-            <input
-              type="nickname"
-              id="nickname"
-              class="input-text"
-              name="nickname"
-            />
-          <label for="bio" class="label-text">소개</label>
-            <input
-              type="bio"
-              id="bio"
-              class="input-text"
-              name="bio"
-            />
-          <button class="done-profile-edit-btn" @click="doneEditInfo">정보 수정 완료</button>
-        </div>
+  <transition name="fade" appear>
+    <div class="overlay" v-if="isOpen == true" @click="closeEditModal"></div>
+  </transition>
+  <transition
+    mode="out-in"
+    enter-active-class="animate__animated animate__fadeInUp"
+    leave-active-class="animate__animated animate__fadeOutDown"
+  >
+    <div class="modal" v-if="isOpen == true">
+      <h2>내 정보 수정</h2>
+      <div class="profile-image">
+        <img src="https://via.placeholder.com/150/92c952" />
       </div>
-    </transition>
+      <div>
+        <button class="change-profile-pic-btn" @click="changeProfilePic">
+          프로필 사진 변경
+        </button>
+        <label for="nickname" class="label-text">닉네임</label>
+        <input
+          type="nickname"
+          id="nickname"
+          class="input-text"
+          name="nickname"
+        />
+        <label for="bio" class="label-text">소개</label>
+        <input type="bio" id="bio" class="input-text" name="bio" />
+        <button class="done-profile-edit-btn" @click="doneEditInfo">
+          정보 수정 완료
+        </button>
+      </div>
+    </div>
+  </transition>
 
   <!-- Profile Info -->
   <div>
@@ -39,14 +39,20 @@
     <div class="container">
       <div class="profile">
         <div class="profile-image">
-          <img src="https://via.placeholder.com/150/92c952" alt="profile image">
+          <img
+            src="https://via.placeholder.com/150/92c952"
+            alt="profile image"
+          />
         </div>
         <div class="profile-user-settings">
           <h1 class="profile-user-name">닉네임닉네임닉네임</h1>
           <!-- 이메일 조회 빼도 될 듯? -->
           <p class="profile-user-email">email@email.com</p>
-          <button class="btn profile-edit-btn" @click="openEditModal">내 정보 수정</button>
-          <follow-button class="btn profile-edit-btn"
+          <button class="btn profile-edit-btn" @click="openEditModal">
+            내 정보 수정
+          </button>
+          <follow-button
+            class="btn profile-edit-btn"
             :followed="!valid"
             @click="handleFollow"
           ></follow-button>
@@ -59,10 +65,14 @@
           </ul>
         </div>
         <div class="profile-bio">
-          <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum, maiores tenetur. Incidunt nihil vitae aliquid totam ex maxime sint perferendis.</p>
+          <p>
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum,
+            maiores tenetur. Incidunt nihil vitae aliquid totam ex maxime sint
+            perferendis.
+          </p>
         </div>
         <div class="change-pwd-signout">
-          <p  class="change-pwd-signout-text">비밀번호 변경 및 계정 탈퇴</p>
+          <p class="change-pwd-signout-text">비밀번호 변경 및 계정 탈퇴</p>
         </div>
       </div>
     </div>
@@ -100,16 +110,14 @@ export default defineComponent({
     changeProfilePic() {
       // 프로필 사진 변경 정보 담아서 BE로 보내는 method
       this.closeEditModal();
-    }
-  }
-
-})
+    },
+  },
+});
 </script>
 
 <style scoped lang="scss">
 // accounts에서 input css 이용
 @import "@/assets/css/accounts.scss";
-
 
 // my profile info edit modal
 .overlay {
@@ -120,8 +128,8 @@ export default defineComponent({
   bottom: 0;
   z-index: 98;
   width: 100%;
-  height:100%;
-  background: rgba(0,0,0,0.6);
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
   padding: 20px;
 }
 .modal {
@@ -178,25 +186,25 @@ export default defineComponent({
 
 // profile
 :root {
-    font-size: 10px;
+  font-size: 10px;
 }
 
 *,
 *::before,
 *::after {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: "Open Sans", Arial, sans-serif;
-    min-height: 100vh;
-    background-color: #fafafa;
-    color: #262626;
-    padding-bottom: 3rem;
+  font-family: "Open Sans", Arial, sans-serif;
+  min-height: 100vh;
+  background-color: #fafafa;
+  color: #262626;
+  padding-bottom: 3rem;
 }
 
 img {
-    display: block;
+  display: block;
 }
 
 .container {
@@ -218,23 +226,23 @@ img {
 }
 
 .visually-hidden {
-    position: absolute !important;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
-    clip: rect(1px, 1px, 1px, 1px);
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
 }
 
 /* Profile Section */
 
 .profile {
-    padding: 5rem 0;
+  padding: 5rem 0;
 }
 
 .profile::after {
-    content: "";
-    display: block;
-    clear: both;
+  content: "";
+  display: block;
+  clear: both;
 }
 
 .profile-image {
@@ -252,8 +260,8 @@ img {
 .profile-user-settings,
 .profile-stats,
 .profile-bio {
-    float: left;
-    width: calc(66.666% - 2rem);
+  float: left;
+  width: calc(66.666% - 2rem);
 }
 
 .profile-user-settings {
@@ -300,21 +308,21 @@ img {
 }
 
 .profile-stats {
-    // margin-top: 2.3rem;
+  // margin-top: 2.3rem;
   margin-top: 1rem;
 }
 
 .profile-stats li {
-    display: inline-block;
-    font-size: 1.6rem;
-    line-height: 1.5;
-    margin-right: 2rem;
-    // margin-right: auto;
-    cursor: pointer;
+  display: inline-block;
+  font-size: 1.6rem;
+  line-height: 1.5;
+  margin-right: 2rem;
+  // margin-right: auto;
+  cursor: pointer;
 }
 
 .profile-stats li:last-of-type {
-    margin-right: 0;
+  margin-right: 0;
 }
 
 .profile-bio {
@@ -327,7 +335,7 @@ img {
 
 .profile-stat-count,
 .profile-edit-btn {
-    font-weight: $weight-semi-bold;
+  font-weight: $weight-semi-bold;
 }
 
 /* Media Query */
@@ -422,66 +430,65 @@ img {
 /* CSS grid */
 
 @supports (display: grid) {
+  .profile {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: repeat(3, auto);
+    grid-column-gap: 1.5rem;
+    // grid-column-gap: 3rem;
+    align-items: center;
+  }
+
+  .profile-image {
+    grid-row: 1 / -1;
+  }
+
+  .profile-image,
+  .profile-user-settings,
+  .profile-stats,
+  .profile-bio {
+    width: auto;
+    // margin: 0;
+    // margin: auto;
+  }
+  .change-pwd-signout {
+    grid-column: -2 / -1;
+    display: flex;
+    justify-content: flex-end;
+  }
+  // CSS grid 40rem 이하 적용
+  @media (max-width: 40rem) {
     .profile {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      grid-template-rows: repeat(3, auto);
-      grid-column-gap: 1.5rem;
-      // grid-column-gap: 3rem;
-      align-items: center;
+      grid-template-columns: auto 1fr;
+      grid-row-gap: 1.5rem;
     }
 
     .profile-image {
-      grid-row: 1 / -1;
+      grid-row: 1 / 2;
     }
 
-    .profile-image,
-    .profile-user-settings,
+    .profile-user-settings {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      grid-gap: 1rem;
+    }
+
+    .profile-edit-btn,
     .profile-stats,
     .profile-bio {
-      width: auto;
-      // margin: 0;
-      // margin: auto;
+      grid-column: 1 / -1;
     }
+
+    .profile-user-settings,
+    .profile-edit-btn,
+    .profile-bio,
+    .profile-stats {
+      margin: 0;
+    }
+
     .change-pwd-signout {
-      grid-column: -2 / -1;
-      display: flex;
-      justify-content: flex-end;
+      grid-row: 4 / 5;
     }
-    // CSS grid 40rem 이하 적용
-    @media (max-width: 40rem) {
-      .profile {
-        grid-template-columns: auto 1fr;
-        grid-row-gap: 1.5rem;
-      }
-
-      .profile-image {
-        grid-row: 1 / 2;
-      }
-
-      .profile-user-settings {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        grid-gap: 1rem;
-      }
-
-      .profile-edit-btn,
-      .profile-stats,
-      .profile-bio {
-        grid-column: 1 / -1;
-      }
-
-      .profile-user-settings,
-      .profile-edit-btn,
-      .profile-bio,
-      .profile-stats {
-        margin: 0;
-      }
-
-      .change-pwd-signout {
-        grid-row: 4 / 5;
-      }
-    }
+  }
 }
-
 </style>
