@@ -110,7 +110,11 @@
   </transition>
   <!-- Sign Out Confirmation Modal -->
   <transition name="fade" appear>
-    <div class="overlay" v-if="isSignoutOpen == true" @click="closeSignOutModal"></div>
+    <div
+      class="overlay"
+      v-if="isSignoutOpen == true"
+      @click="closeSignOutModal"
+    ></div>
   </transition>
   <transition
     mode="out-in"
@@ -125,9 +129,7 @@
         @click="closeSignOutModal"
       ></close-button>
       <div class="signout-btn">
-        <button class="confirm-signout-btn" @click="signOut">
-          탈퇴하기
-        </button>
+        <button class="confirm-signout-btn" @click="signOut">탈퇴하기</button>
         <button class="return-signout-btn" @click="closeSignOutModal">
           돌아가기
         </button>
@@ -211,7 +213,6 @@ export default defineComponent({
       },
       isShowPwd: false,
       isClose: false,
-
     };
   },
   components: {
@@ -269,7 +270,6 @@ export default defineComponent({
     updatecheckPwd(value: string) {
       this.checkPwd = value;
     },
-
   },
 });
 </script>
@@ -303,7 +303,6 @@ export default defineComponent({
     margin: 0 auto;
   }
 }
-
 
 // my profile info edit modal
 .overlay {
