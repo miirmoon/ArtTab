@@ -59,6 +59,8 @@
 import { defineComponent } from "vue";
 import PageTitle from "@/components/accounts/child/PageTitle.vue";
 import InputPassword from "@/components/accounts/child/InputPassword.vue";
+import AccountsAPI from "@/apis/accountsAPI";
+import ResponseData from "@/types/ResponseData";
 import { useCookies } from "vue3-cookies";
 
 export default defineComponent({
@@ -87,13 +89,11 @@ export default defineComponent({
     }
   },
   watch: {
+    email: function () {
+      this.actButton();
+    },
     password: function () {
-      console.log("dd");
-      if (this.password && this.email && !this.valid.email) {
-        this.isCompleted = true;
-      } else {
-        this.isCompleted = false;
-      }
+      this.actButton();
     },
   },
   methods: {
@@ -101,7 +101,26 @@ export default defineComponent({
     updatePassword(value: string) {
       this.password = value;
     },
-    login() {
+    actButton() {
+      this.valid.email = false;
+      this.isCompleted = this.password && this.email ? true : false;
+    },
+    async login() {
+      // 아이디 가입여부 확인(이메일 중복 확인과 반대)
+      await AccountsAPI.checkEmail(this.email)
+        .then((res: ResponseData) => {
+          if (res.data === "success") {
+            this.valid.email = true;
+          } else {
+            this.valid.email = false;
+          }
+        })
+        .catch(() => {
+          this.valid.email = false;
+          alert("이메일 가입 여부 확인 중 오류가 발생했습니다.");
+        });
+      // 가입되지 않은 이메일인 경우 로그인 처리 중단
+      if (this.valid.email) return;
       // 아이디 저장을 체크한 경우 쿠키에 저장하기
       if (this.storeId) {
         this.cookies.set("idCookie", this.email, "30d");
@@ -110,7 +129,7 @@ export default defineComponent({
       else {
         this.cookies.remove("idCookie");
       }
-      console.log("로그인 처리하기");
+      // 로그인 처리하기
     },
     moveSignUp() {
       this.$router.push({ name: "SignUp" });
