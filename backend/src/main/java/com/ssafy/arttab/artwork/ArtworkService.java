@@ -37,7 +37,7 @@ public class ArtworkService {
                         .writer(memberRepository.findById(artworkDto.getWriterId()).get())
                         .galleryItemList(null)
                         .title(artworkDto.getTitle())
-                        .desc(artworkDto.getDesc())
+                        .description(artworkDto.getDescription())
                         .originFileName(artworkDto.getOriginFileName())
                         .saveFileName(artworkDto.getSaveFileName())
                         .saveFolder(artworkDto.getSaveFolder())
@@ -55,7 +55,7 @@ public class ArtworkService {
 
         // 저장된 정보 수정
         artwork.get().setTitle(requestDto.getTitle());
-        artwork.get().setDesc(requestDto.getDesc());
+        artwork.get().setDescription(requestDto.getDescription());
         artwork.get().setOriginFileName(requestDto.getOriginFileName());
         artwork.get().setSaveFileName(requestDto.getSaveFileName());
         artwork.get().setSaveFolder(requestDto.getSaveFolder());
