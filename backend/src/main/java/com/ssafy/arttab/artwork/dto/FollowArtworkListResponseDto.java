@@ -16,7 +16,7 @@ import java.util.List;
 public class FollowArtworkListResponseDto implements Comparable<FollowArtworkListResponseDto>{
 
     @ApiModelProperty(value = "작품 저장 경로")
-    private String saveFolder;
+    private List<String> saveFolder;
     @ApiModelProperty(value = "팔로우한 회원의 작품 수")
     private int artworkNum;
     @ApiModelProperty(value = "팔로우한 회원의 전체 팔로워 수")
@@ -25,20 +25,22 @@ public class FollowArtworkListResponseDto implements Comparable<FollowArtworkLis
     private int artworkId;
     @ApiModelProperty(value = "회원 이메일")
     private String memberMail;
-    private int followNum;
+    @ApiModelProperty(value = "정렬용: 해당 회원이 제일 최근에 업로드한 날짜")
+    private LocalDateTime recentUpdated;
 
     @Builder
-    public FollowArtworkListResponseDto(String saveFolder, int artworkNum, int followerNum, int artworkId, String memberMail, int followNum) {
+    public FollowArtworkListResponseDto(List<String> saveFolder, int artworkNum, int followerNum, int artworkId, String memberMail, LocalDateTime recentUpdated) {
         this.saveFolder = saveFolder;
         this.artworkNum = artworkNum;
         this.followerNum = followerNum;
         this.artworkId = artworkId;
         this.memberMail = memberMail;
-        this.followNum = followNum;
+        this.recentUpdated = recentUpdated;
     }
 
     @Override
     public int compareTo(FollowArtworkListResponseDto o) {
-        return o.followNum-this.followNum;
+        if(this.recentUpdated.isAfter(o.recentUpdated)) return -1;
+        else return 1;
     }
 }
