@@ -27,4 +27,6 @@ public interface ArtworkRepository extends JpaRepository<Artwork, Long> {
 
     @Query(value = "select count(*) from Artwork where writer_id = :id", nativeQuery = true)
     int findNumByMemberId(Long id);
+
+
 }

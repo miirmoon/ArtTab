@@ -156,7 +156,7 @@ public class ArtworkService {
 
     // 팔로우한 회원의 작품 리스트
 //    public List<FollowArtworkListResponseDto> selectFollowArtworkList(String nickname) {
-//
+
 //        Member member=memberRepository.findMemberByNickname(nickname); // nickname
 //        List<Follow> followList=followRepository.findAllFollowing(member.getId()); // 팔로우하는 사람들 리스트
 //
@@ -168,6 +168,7 @@ public class ArtworkService {
 //                    .saveFolder()
 //                    .build();
 //        }
-//
+
 //    }
+
 }
