@@ -11,7 +11,7 @@ public class ArtworkResponseDto {
 
     private Long writerId;
     private String title;
-    private String desc;
+    private String description;
     private LocalDateTime regdate;
     private String originFileName;
     private String saveFileName;
@@ -21,7 +21,7 @@ public class ArtworkResponseDto {
     public ArtworkResponseDto (Artwork entity){
         this.writerId=entity.getWriter().getId();
         this.title=entity.getTitle();
-        this.desc=entity.getDesc();
+        this.description=entity.getDescription();
         this.regdate=entity.getRegdate();
         this.originFileName=entity.getOriginFileName();
         this.saveFileName=entity.getSaveFileName();
