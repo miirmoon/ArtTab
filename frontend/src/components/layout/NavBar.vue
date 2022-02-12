@@ -24,12 +24,12 @@
         </li>
       </ul>
       <!-- 사용자 로그인 후 -->
-      <!-- <ul>
+      <ul>
         <li @click="closeNavBar">
-          <router-link :to="{ name: 'Profile' }">그림 올리기</router-link>
+          <router-link :to="{ name: 'ArtworkCreate' }">그림 올리기</router-link>
         </li>
         <li class="tooltip" @click="closeNavBar">
-          <router-link :to="{ name: 'Profile' }"
+          <router-link :to="{ name: 'ArtworkCreate' }"
             ><account-circle-outline
               class="icon navbar-icon"
             ></account-circle-outline>
@@ -44,7 +44,7 @@
           >
           <span class="tooltip-text">로그아웃</span>
         </li>
-      </ul> -->
+      </ul>
     </nav>
     <text-search class="icon navbar-toggle" @click="toggleNavBar"></text-search>
   </div>
