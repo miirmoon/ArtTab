@@ -27,8 +27,8 @@ class ArtworkAPI {
     );
   }
   // id에 해당하는 작품 조회 (개별 작품 조회)
-  findByNo(id: number) {
-    return api.get(`/artwork/` + id);
+  getArtworkById(id: number, loginId: number) {
+    return api.get(`/artwork/${id}`, { params: { loginId: loginId } });
   }
   // 작품 전체 조회 API
   getArtworkList() {
