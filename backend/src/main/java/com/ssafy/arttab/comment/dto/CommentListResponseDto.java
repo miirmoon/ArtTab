@@ -22,7 +22,7 @@ public class CommentListResponseDto {
         this.id = entity.getId();
         this.artwork_id = entity.getArtwork().getId();
         this.member_id = entity.getMember().getId();
-        this.regdate = LocalDateTime.now();
+        this.regdate = entity.getRegdate();
         this.content = entity.getContent();
         this.email = member.getEmail();
         this.imgUrl = member.getSaveFolder();
