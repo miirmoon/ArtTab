@@ -189,17 +189,4 @@ public class ArtworkService {
         return result;
     }
 
-    // 팔로우한 회원 리스트
-    public List<MemberInfoResponse> selectAllFollowing(String nickname){
-        Member member = memberRepository.findMemberByNickname(nickname);
-        List<Follow> followList = followRepository.findAllFollowing(member.getId());
-        List<MemberInfoResponse> result=new ArrayList<>();
-
-        for(Follow follow: followList){
-            Member follower = follow.getFollowee();
-            result.add(new MemberInfoResponse(follower.getNickname(), follower.getEmail(), follower.getIntro()));
-        }
-        return result;
-    }
-
 }
