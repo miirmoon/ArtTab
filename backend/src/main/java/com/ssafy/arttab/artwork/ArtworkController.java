@@ -191,12 +191,5 @@ public class ArtworkController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @ApiOperation(value="팔로우한 회원 목록 조회")
-    @GetMapping("api/v1/artwork/{nickname}/followemmberlist")
-    public ResponseEntity<List<MemberInfoResponse>> selectAllFollowing(@PathVariable("nickname") String nickname){
-        List<MemberInfoResponse> list=artworkService.selectAllFollowing(nickname);
-        return new ResponseEntity<>(list, HttpStatus.OK);
-    }
-
 }
 
