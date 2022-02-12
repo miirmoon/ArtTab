@@ -1,12 +1,12 @@
 import api from "@/http-common";
+import { fileApiInstance } from "@/http-common";
 
 class ArtworkAPI {
-  // 작품 등록 API
-  insert(desc: string, file: File, title: string, writerId: number) {
-    return api.post(
-      `/artwork?desc=` + desc + `&title=` + title + `&writerId=` + writerId
-    );
+  // 작품 등록 API(artwork: file, title, writerId, description)
+  addArtwork(artwork: FormData) {
+    return fileApiInstance.post(`/artwork`, artwork);
   }
+
   // 작품 수정 API
   update(
     desc: string,
