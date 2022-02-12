@@ -41,7 +41,7 @@
       </div>
       <div>{{ artwork.desc }}</div>
     </div>
-    <artwork-comments></artwork-comments>
+    <artwork-comments :artworkid="artworkId"></artwork-comments>
   </article>
 </template>
 
