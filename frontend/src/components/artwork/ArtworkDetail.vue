@@ -13,6 +13,10 @@
           <div>
             <div class="profile-writer">by. {{ artwork.writerNickname }}</div>
             <!-- 본인 작품일 경우 follow버튼 대신 수정 버튼 넣기-->
+            <!-- 수정하기 버튼 클릭시 수정 페이지로 데이터 전달 -->
+            <button :class="btn-white" @click="artworkUpdate">
+              <router-link to="/">수정하기</router-link>
+            </button>
             <button
               :class="{ 'btn-white': artwork.isFollow }"
               @click="toggleFollow"
@@ -118,6 +122,18 @@ export default defineComponent({
       const url = window.document.location.href;
       navigator.clipboard.writeText(url);
       (this.$refs["toast"] as typeof ToastMessage).showToast();
+    },
+    artworkUpdate() {
+      this.$router.push({
+        name: "ArtworkUpdate",
+        query: {
+          artworkId: this.artworkId,
+          artworkTitle: this.artwork.title,
+          artworkDesc: this.artwork.desc,
+          // img는 위의 정보구조에 따라 다르게 써야함
+          artworkImg: this.artwork.writerProfileSaveFolder,
+        },
+      });
     },
   },
 });
