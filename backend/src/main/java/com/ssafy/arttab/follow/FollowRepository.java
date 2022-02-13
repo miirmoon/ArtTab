@@ -33,7 +33,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
      * @param id 현재 팔로워 수를 조회할 회원번호
      * @return 팔로워 수를 리턴합니다
      */
-    @Query(value = "SELECT count(*) FROM Follow WHERE follower = :id", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM follow WHERE follower = :id", nativeQuery = true)
     int findAllFollowCnt(Long id);
 
     /***
@@ -41,7 +41,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
      * @param id 현재 follower 수를 조회할 회원번호
      * @return id가 팔로우하는 회원의 수를 리턴합니다
      */
-    @Query(value = "SELECT count(*) FROM Follow WHERE follower = :id", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM follow WHERE follower = :id", nativeQuery = true)
     int findAllFollowingCnt(Long id);
 
     /***
@@ -49,7 +49,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
      * @param id 현재 followee 수를 조회할 회원번호
      * @return id를 팔로우하는 회원의 수를 리턴합니다
      */
-    @Query(value = "SELECT count(*) FROM Follow WHERE followee = :id", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM follow WHERE followee = :id", nativeQuery = true)
     int findAllFollowedCnt(Long id);
 
     /***
@@ -58,7 +58,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
      * @param followee
      * @return follower가 followee를 팔로우하는지 리턴
      */
-    @Query(value = "SELECT count(*) FROM Follow WHERE follower = :follower AND followee = :followee", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM follow WHERE follower = :follower AND followee = :followee", nativeQuery = true)
     int isFollow(Long follower, Long followee);
 
     /***
@@ -66,6 +66,6 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
      * @param id 현재 팔로잉하고 있는 사람을 알고 싶은 회원번호
      * @return id가 팔로우하는 회원의 리스트를 리턴합니다
      */
-    @Query(value = "SELECT * FROM Follow WHERE follower = :id", nativeQuery = true)
+    @Query(value = "SELECT * FROM follow WHERE follower = :id", nativeQuery = true)
     List<Follow> findAllFollowing(Long id);
 }

@@ -12,15 +12,15 @@ import java.util.List;
 public interface LikesRepository extends JpaRepository<Likes, Long> {
 
     @Modifying
-    @Query(value = "DELETE FROM Likes WHERE artwork = :artworkId AND member = :memberId", nativeQuery = true)
+    @Query(value = "DELETE FROM likes WHERE artwork = :artworkId AND member = :memberId", nativeQuery = true)
     void deleteLike(long artworkId, long memberId);
 
-    @Query(value = "SELECT count(*) FROM Likes WHERE artwork=:id", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM likes WHERE artwork=:id", nativeQuery = true)
     int selectLikeNumByArtworkId(Long id);
 
-    @Query(value = "SELECT count(*) FROM Likes WHERE artwork=:artwork AND member=:member", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM likes WHERE artwork=:artwork AND member=:member", nativeQuery = true)
     int selectIsLike(@Param("artwork")Long artwork, @Param("member")Long member);
 
-    @Query(value = "SELECT * FROM Likes WHERE member=:id", nativeQuery = true)
+    @Query(value = "SELECT * FROM likes WHERE member=:id", nativeQuery = true)
     List<Likes> selectByMemberId(Long id);
 }
