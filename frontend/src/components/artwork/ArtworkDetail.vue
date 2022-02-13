@@ -19,14 +19,18 @@
               class="btn-white"
               @click="artworkUpdate"
             >
-              <router-link to="/">수정하기</router-link>
+              수정하기
             </button>
-            <button
+            <follow-button
               v-else
               :class="{ 'btn-white': artwork.followOrNot }"
-              @click="toggleFollow"
-              v-text="followText"
-            ></button>
+              :followed="artwork.followOrNot"
+              :writerId="artwork.writerId"
+              :userId="userInfo.id"
+              @toggle="toggleFollow"
+              @message="showToastMessage"
+            >
+            </follow-button>
           </div>
         </div>
       </div>
@@ -46,7 +50,7 @@
           {{ computedDate }}
         </div>
       </div>
-      <div>{{ artwork.desciption }}</div>
+      <div class="desc">{{ artwork.desciption }}</div>
     </div>
     <artwork-comments :artworkid="artworkId"></artwork-comments>
     <toast-message ref="toast"></toast-message>
@@ -57,9 +61,9 @@
 import { defineComponent } from "vue";
 import ArtworkComments from "@/components/artwork/ArtworkComments.vue";
 import LikeButton from "@/components/common/LikeButton.vue";
+import FollowButton from "@/components/common/FollowButton.vue";
 import ToastMessage from "@/components/common/ToastMessage.vue";
 import ArtworkAPI from "@/apis/artworkAPI";
-import FollowAPI from "@/apis/followAPI";
 import ResponseData from "@/types/ResponseData";
 import { CalendarClock, LinkVariant } from "mdue";
 import { diffTime } from "@/utils/timeDifference";
@@ -72,6 +76,7 @@ export default defineComponent({
   components: {
     ArtworkComments,
     LikeButton,
+    FollowButton,
     ToastMessage,
     CalendarClock,
     LinkVariant,
@@ -135,41 +140,8 @@ export default defineComponent({
         ? this.artwork.likeNum + 1
         : this.artwork.likeNum - 1;
     },
-    toggleFollow() {
-      // 팔로우 등록
-      if (!this.artwork.followOrNot) {
-        FollowAPI.addFollow({
-          followeeId: this.artwork.writerId,
-          followerId: this.userInfo.id,
-        })
-          .then((res: ResponseData) => {
-            if (res.data === "success") {
-              this.artwork.followOrNot = true;
-            } else {
-              this.showToastMessage("이미 팔로우 등록된 작가입니다.");
-            }
-          })
-          .catch(() => {
-            this.showToastMessage("팔로우 등록 중 오류가 발생했습니다.");
-          });
-      }
-      // 팔로우 취소
-      else {
-        FollowAPI.deleteFollow({
-          followeeId: this.artwork.writerId,
-          followerId: this.userInfo.id,
-        })
-          .then((res: ResponseData) => {
-            if (res.data === "success") {
-              this.artwork.followOrNot = false;
-            } else {
-              this.showToastMessage("이미 언팔로우된 작가입니다.");
-            }
-          })
-          .catch(() => {
-            this.showToastMessage("팔로우 취소 중 오류가 발생했습니다.");
-          });
-      }
+    toggleFollow(res: boolean) {
+      this.artwork.followOrNot = res;
     },
     // 클립보드 복사
     copyClipboard() {
@@ -243,6 +215,9 @@ export default defineComponent({
       margin-top: $size-small;
       margin-right: $size-small;
     }
+  }
+  .desc {
+    line-height: $size-large;
   }
 }
 
