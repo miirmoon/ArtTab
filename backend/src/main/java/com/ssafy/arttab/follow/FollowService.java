@@ -20,12 +20,12 @@ public class FollowService {
      * @return 해당 정보를 가지고 있는 Follow 객체의 id값
      */
     @Transactional
-    public Long insert(FollowSaveRequestDto requestDto) {
+    public void insert(FollowSaveRequestDto requestDto) {
         Member follower = memberRepository.findById(requestDto.getFollowerId())
                 .orElseThrow(IllegalArgumentException::new);
         Member followee = memberRepository.findById(requestDto.getFolloweeId())
                 .orElseThrow(IllegalArgumentException::new);
-        return followRepository.save(requestDto.toEntity(follower, followee)).getId();
+        followRepository.save(requestDto.toEntity(follower, followee)).getId();
     }
 
     /***
