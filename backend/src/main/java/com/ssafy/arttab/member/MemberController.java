@@ -39,7 +39,7 @@ public class MemberController {
         try{
             memberService.saveMember(memberSaveRequest);
         }catch (Exception e){
-            message ="fail";
+            message =e.getMessage();
         }
 
         return new ResponseEntity<String>(message, HttpStatus.OK);
@@ -49,12 +49,10 @@ public class MemberController {
     @PostMapping("/email")
     public ResponseEntity<String> sendEmail(@Valid @RequestBody LoginEmail loginEmail) {
         String message = "success";
-        try{
+
             memberService.SendNumtoEmail(loginEmail.getEmail());
 
-        }catch (Exception e){
-            message ="fail";
-        }
+
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
@@ -78,45 +76,37 @@ public class MemberController {
             memberService.addNickname(loginEmail,nickname);
 
         }catch (Exception e){
-            message ="fail";
+            message =e.getMessage();
         }
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
 //    @ApiOperation(value = "로그인", notes = "Access-token과 로그인 결과 메시지를 반환한다.", response = String.class)
 //    @PostMapping("/login")
-//    public ResponseEntity<Map<String, Object>> login(@RequestBody @ApiParam(value = "로그인 시 필요한 회원정보 (이메일, 비밀번호).", required = true) Member member) {
-//        Map<String, Object> resultMap = new HashMap<>();
-//        HttpStatus status = null;
+//    public ResponseEntity<String> login(@RequestBody @ApiParam(value = "로그인 시 필요한 회원정보 (이메일, 비밀번호).", required = true) User user) {
 //
-//        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+////        return ResponseEntity.ok().body(memberService.login(user));
 //    }
 
     @ApiOperation(value = "닉네임 중복체크")
-    @PostMapping("/idCk")
-    public ResponseEntity<String> selectOnebynick(@RequestBody String nickname){
+    @GetMapping("/idCk")
+    public ResponseEntity<String> selectOnebynick(@RequestParam String nickname){
         String message = "success";
-        try{
-            memberService.MemberIdCheck(nickname);
-        }catch (DuplicateException e){
-            message= e.getMessage();
-        }
+        memberService.MemberIdCheck(nickname);
 
         return new ResponseEntity<String>(message,HttpStatus.OK);
     }
 
     @ApiOperation(value = "이메일 중복체크")
-    @PostMapping("/emailCk")
-    public ResponseEntity<String> selectOnebyemail(@Email @RequestBody String email){
+    @GetMapping("/emailCk")
+    public ResponseEntity<String> selectOnebyemail(@Email @RequestParam String email){
+        System.out.println(email);
         String message = "success";
-        try{
-            memberService.MemberIdCheck(email);
-        }catch (DuplicateException e){
-            message = e.getMessage();
-        }
+        memberService.MemberEmailCheck(email);
 
         return new ResponseEntity<String>(message,HttpStatus.OK);
     }
+
     @ApiOperation(value = "비밀번호 수정", notes = "비밀번호 DB수정 성공여부에 따라 'success 또는 'fail' 문자열을 반환한다.", response = String.class)
     @PutMapping("/me/password")
     public ResponseEntity<String> updatePassword(@RequestBody LoginEmail loginEmail, PasswordUpdateRequest passwordUpdateRequest) {
@@ -145,6 +135,7 @@ public class MemberController {
         memberService.updateMember(loginEmail,introUpdateRequest);
         return ResponseEntity.ok().build();
     }
+
     @ApiOperation(value = "비밀번호 찾기")
     @PutMapping("/password")
     public ResponseEntity<String> findPassword(String email){
