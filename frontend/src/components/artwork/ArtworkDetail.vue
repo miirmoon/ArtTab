@@ -189,12 +189,12 @@ export default defineComponent({
       }
     }
     .profile-title {
+      margin-bottom: $size-small;
       font-size: $font-large;
       font-weight: $weight-bold;
     }
     .profile-writer {
       display: inline-block;
-      margin-top: $size-small;
       margin-right: $size-small;
     }
   }
