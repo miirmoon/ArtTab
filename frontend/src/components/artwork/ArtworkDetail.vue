@@ -34,11 +34,13 @@
         <like-button
           class="icon"
           :liked="artwork.isLike"
+          :artworkId="artworkId"
+          :userId="userInfo.id"
           @toggle="toggleLike"
+          @message="showToastMessage"
         ></like-button>
         <div class="text">{{ artwork.likeNum }}</div>
         <link-variant class="icon" @click="copyClipboard"></link-variant>
-        <toast-message ref="toast"></toast-message>
         <calendar-clock class="icon icon-date"></calendar-clock>
         <div class="text">
           {{ computedDate }}
@@ -47,6 +49,7 @@
       <div>{{ artwork.desc }}</div>
     </div>
     <artwork-comments :artworkid="artworkId"></artwork-comments>
+    <toast-message ref="toast"></toast-message>
   </article>
 </template>
 
@@ -149,14 +152,13 @@ export default defineComponent({
       document.body.removeChild(input);
 
       if (result) {
-        (this.$refs["toast"] as typeof ToastMessage).showToast(
-          "주소가 복사되었습니다."
-        );
+        this.showToastMessage("주소가 복사되었습니다.");
       } else {
-        (this.$refs["toast"] as typeof ToastMessage).showToast(
-          "주소 복사가 지원되지 않는 브라우저입니다."
-        );
+        this.showToastMessage("주소 복사가 지원되지 않는 브라우저입니다.");
       }
+    },
+    showToastMessage(msg: string) {
+      (this.$refs["toast"] as typeof ToastMessage).showToast(msg);
     },
   },
 });
