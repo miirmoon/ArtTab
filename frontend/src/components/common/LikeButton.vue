@@ -48,7 +48,7 @@ export default defineComponent({
             if (res.data === "success") {
               this.$emit("toggle", true);
             } else {
-              this.$emit("message", "좋아요 등록 중 오류가 발생했습니다.");
+              this.$emit("message", "이미 좋아요 등록된 작품입니다.");
             }
           })
           .catch(() => {
@@ -65,7 +65,7 @@ export default defineComponent({
             if (res.data === "success") {
               this.$emit("toggle", false);
             } else {
-              this.$emit("message", "좋아요 취소 중 오류가 발생했습니다.");
+              this.$emit("message", "이미 좋아요 취소된 작품입니다.");
             }
           })
           .catch(() => {

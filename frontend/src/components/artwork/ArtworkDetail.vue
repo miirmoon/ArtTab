@@ -23,7 +23,7 @@
             </button>
             <button
               v-else
-              :class="{ 'btn-white': artwork.isFollow }"
+              :class="{ 'btn-white': artwork.followOrNot }"
               @click="toggleFollow"
               v-text="followText"
             ></button>
@@ -33,7 +33,7 @@
       <div class="additionalinfo">
         <like-button
           class="icon"
-          :liked="artwork.isLike"
+          :liked="artwork.likeOrNot"
           :artworkId="artworkId"
           :userId="userInfo.id"
           @toggle="toggleLike"
@@ -46,7 +46,7 @@
           {{ computedDate }}
         </div>
       </div>
-      <div>{{ artwork.desc }}</div>
+      <div>{{ artwork.desciption }}</div>
     </div>
     <artwork-comments :artworkid="artworkId"></artwork-comments>
     <toast-message ref="toast"></toast-message>
@@ -58,7 +58,8 @@ import { defineComponent } from "vue";
 import ArtworkComments from "@/components/artwork/ArtworkComments.vue";
 import LikeButton from "@/components/common/LikeButton.vue";
 import ToastMessage from "@/components/common/ToastMessage.vue";
-import artworkAPI from "@/apis/artworkAPI";
+import ArtworkAPI from "@/apis/artworkAPI";
+import FollowAPI from "@/apis/followAPI";
 import ResponseData from "@/types/ResponseData";
 import { CalendarClock, LinkVariant } from "mdue";
 import { diffTime } from "@/utils/timeDifference";
@@ -84,16 +85,18 @@ export default defineComponent({
         artworkSaveFolder:
           // "https://cdn.pixabay.com/photo/2018/07/18/15/43/animal-3546613_960_720.jpg",
           "https://cdn.pixabay.com/photo/2019/05/04/15/24/art-4178302_960_720.jpg",
+        desciption:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec odio urna, lobortis at finibus vitae, consectetur eu neque. Pellentesque feugiat id eros nec imperdiet. Proin in magna eget nibh volutpat varius eget eu urna. Quisque tempor tincidunt tellus. Vivamus ac dignissim mauris. Sed non porttitor erat. Fusce in rhoncus lectus. Sed feugiat leo at ante auctor tincidunt.",
+        followOrNot: false,
+        likeNum: 4652,
+        likeOrNot: false,
         regdate: "2022-02-10T09:54:24.762Z",
         title: "여우",
-        writerProfileSaveFolder:
-          "https://cdn.pixabay.com/photo/2021/03/14/11/14/fish-6093991_960_720.jpg",
+        writerEmail: "ssafy@gmail.com",
         writerId: 1,
         writerNickname: "내이름은여우",
-        isFollow: false,
-        isLike: false,
-        likeNum: 4652,
-        desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec odio urna, lobortis at finibus vitae, consectetur eu neque. Pellentesque feugiat id eros nec imperdiet. Proin in magna eget nibh volutpat varius eget eu urna. Quisque tempor tincidunt tellus. Vivamus ac dignissim mauris. Sed non porttitor erat. Fusce in rhoncus lectus. Sed feugiat leo at ante auctor tincidunt.",
+        writerProfileSaveFolder:
+          "https://cdn.pixabay.com/photo/2021/03/14/11/14/fish-6093991_960_720.jpg",
       },
     };
   },
@@ -105,7 +108,7 @@ export default defineComponent({
   computed: {
     ...mapState(accountsStore, ["userInfo"]),
     followText(): string {
-      return this.artwork.isFollow ? "언팔로우" : "팔로우";
+      return this.artwork.followOrNot ? "언팔로우" : "팔로우";
     },
     computedDate(): string {
       return diffTime(this.artwork.regdate);
@@ -114,8 +117,10 @@ export default defineComponent({
   methods: {
     getArtworkDetail() {
       // 작품 상세 정보 불러오기
-      artworkAPI
-        .getArtworkById(Number(this.artworkId), Number(this.userInfo.id))
+      ArtworkAPI.getArtworkById(
+        Number(this.artworkId),
+        Number(this.userInfo.id)
+      )
         .then((res: ResponseData) => {
           console.log(res);
         })
@@ -125,15 +130,45 @@ export default defineComponent({
     },
     // 좋아요 상태 변경
     toggleLike(res: boolean) {
-      this.artwork.isLike = res;
+      this.artwork.likeOrNot = res;
+      this.artwork.likeNum = res
+        ? this.artwork.likeNum + 1
+        : this.artwork.likeNum - 1;
     },
     toggleFollow() {
-      if (this.artwork.isFollow) {
-        // 언팔로우 처리 성공 시 상태 변경
-        this.artwork.isFollow = false;
-      } else {
-        // 팔로우 처리 성공 시 상태 변경
-        this.artwork.isFollow = true;
+      // 팔로우 등록
+      if (!this.artwork.followOrNot) {
+        FollowAPI.addFollow({
+          followeeId: this.artwork.writerId,
+          followerId: this.userInfo.id,
+        })
+          .then((res: ResponseData) => {
+            if (res.data === "success") {
+              this.artwork.followOrNot = true;
+            } else {
+              this.showToastMessage("이미 팔로우 등록된 작가입니다.");
+            }
+          })
+          .catch(() => {
+            this.showToastMessage("팔로우 등록 중 오류가 발생했습니다.");
+          });
+      }
+      // 팔로우 취소
+      else {
+        FollowAPI.deleteFollow({
+          followeeId: this.artwork.writerId,
+          followerId: this.userInfo.id,
+        })
+          .then((res: ResponseData) => {
+            if (res.data === "success") {
+              this.artwork.followOrNot = false;
+            } else {
+              this.showToastMessage("이미 언팔로우된 작가입니다.");
+            }
+          })
+          .catch(() => {
+            this.showToastMessage("팔로우 취소 중 오류가 발생했습니다.");
+          });
       }
     },
     // 클립보드 복사
