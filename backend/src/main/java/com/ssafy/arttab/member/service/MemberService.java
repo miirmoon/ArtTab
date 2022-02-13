@@ -1,6 +1,7 @@
 package com.ssafy.arttab.member.service;
 
 import com.ssafy.arttab.artwork.ArtworkRepository;
+import com.ssafy.arttab.config.JWTUtil;
 import com.ssafy.arttab.exception.member.DuplicateException;
 import com.ssafy.arttab.exception.member.NoSuchMemberException;
 import com.ssafy.arttab.exception.member.PasswordMismatchException;
@@ -9,6 +10,11 @@ import com.ssafy.arttab.member.domain.MailAuth;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.dto.LoginEmail;
 import com.ssafy.arttab.member.dto.request.*;
+import com.ssafy.arttab.member.dto.User;
+import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
+import com.ssafy.arttab.member.dto.request.IntroUpdateRequest;
+import com.ssafy.arttab.member.dto.request.MemberSaveRequest;
+import com.ssafy.arttab.member.dto.request.PasswordUpdateRequest;
 import com.ssafy.arttab.member.dto.response.MemberInfoResponse;
 import com.ssafy.arttab.member.dto.response.ProfileInfoResponse;
 import com.ssafy.arttab.member.repository.MailAuthRepogitory;
@@ -37,7 +43,7 @@ import java.util.UUID;
 @Transactional
 @RequiredArgsConstructor
 public class MemberService {
-
+    private final JWTUtil jwtUtil;
     private final MemberRepository memberRepository;
     private final MailSendService mailSendService;
     private final MailAuthRepogitory mailAuthRepogitory;
@@ -117,9 +123,11 @@ public class MemberService {
 
 
         // DB 확인
-        Member member = memberRepository.findMemberByEmail(email);
+        Member member = memberRepository.findMemberByEmail(email)
+                .orElseThrow(NoSuchMemberException::new);
 
-        Optional<MailAuth> mailAuth = mailAuthRepogitory.findById(member.getId());
+        var mailAuth = mailAuthRepogitory.findById(member.getId());
+
 
         // DB에 있으면 변경, 없으면 등록
         mailAuth.ifPresentOrElse(selectmailAuth ->{
@@ -158,6 +166,23 @@ public class MemberService {
            throw new PasswordMismatchException();
        }
     }
+
+    /**
+     * 회원 로그인
+     * @param user
+     */
+    public void login(final User user){
+        Member member = memberRepository.findByEmail(user.getEmail())
+                .orElseThrow(() -> new NoSuchMemberException());
+        if(member.getAuth()!=1){
+            throw new IllegalArgumentException("인증 안된 회원");
+        }
+        if (!BCrypt.checkpw(user.getPassword(), member.getPassword())) {
+            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+        }
+        //토큰 발급
+        return jwtUtil.createToken(member.getId());
+    }
     /**
      * 닉네임 등록
      * @param loginEmail
@@ -180,6 +205,7 @@ public class MemberService {
         var member = memberRepository.findByEmail(loginEmail.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
         var memberInfoResponse = MemberInfoResponse.builder()
+                .id(member.getId())
                 .email(member.getEmail())
                 .nickname(member.getNickname())
                 .intro(member.getIntro())
@@ -264,7 +290,7 @@ public class MemberService {
     // saveFolder 수정: 이메일에 해당하는 프로필 사진 수정
     @Transactional
     public void updateSaveFolder(final LoginEmail loginEmail, String saveFolder){
-        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow(); 
+        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow();
         member.updateSaveFolder(saveFolder);
     }
 
