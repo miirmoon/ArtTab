@@ -44,7 +44,7 @@ import java.util.UUID;
 @Transactional
 @RequiredArgsConstructor
 public class MemberService {
-
+    private final JWTUtil jwtUtil;
     private final MemberRepository memberRepository;
     private final MailSendService mailSendService;
     private final MailAuthRepogitory mailAuthRepogitory;
@@ -293,7 +293,7 @@ public class MemberService {
     // saveFolder 수정: 이메일에 해당하는 프로필 사진 수정
     @Transactional
     public void updateSaveFolder(final LoginEmail loginEmail, String saveFolder){
-        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow(); 
+        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow();
         member.updateSaveFolder(saveFolder);
     }
 
