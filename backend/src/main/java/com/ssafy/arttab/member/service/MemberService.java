@@ -24,6 +24,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -171,18 +172,20 @@ public class MemberService {
      * 회원 로그인
      * @param user
      */
-//    public void login(final User user){
-//        Member member = memberRepository.findByEmail(user.getEmail())
-//                .orElseThrow(() -> new NoSuchMemberException());
-//        if(member.getAuth()!=1){
-//            throw new IllegalArgumentException("인증 안된 회원");
-//        }
-//        if (!BCrypt.checkpw(user.getPassword(), member.getPassword())) {
-//            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
-//        }
-//        //토큰 발급
-//        return jwtUtil.createToken(member.getId());
-//    }
+    public String login(final User user){
+        Member member = memberRepository.findByEmail(user.getEmail())
+                .orElseThrow(NoSuchMemberException::new);
+        if(member.getAuth()!=1){
+            throw new IllegalArgumentException("메일 인증으로 이동");
+        }
+        if (!BCrypt.checkpw(user.getPassword(), member.getPassword())) {
+            throw new IllegalArgumentException("비밀번호 잘못됨");
+        }
+        //토큰 발급
+        HashMap<String, Object> payload = new HashMap();
+        payload.put("Id",member.getId());
+        return JWTUtil.createToken(payload);
+    }
     /**
      * 닉네임 등록
      * @param loginEmail
