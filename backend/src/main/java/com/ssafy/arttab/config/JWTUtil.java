@@ -29,7 +29,7 @@ public class JWTUtil {
         private JwtParser jwtParser = Jwts.parser().setSigningKey(secretKey);
 
         //토큰 생성
-        public static String createToken(Map<String, Object> payload) {
+        public String createToken(Map<String, Object> payload) {
 
                 //payload 부분 설정
                 Claims claims = Jwts.claims(payload);

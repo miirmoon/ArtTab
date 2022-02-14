@@ -9,7 +9,6 @@ import com.ssafy.arttab.follow.FollowRepository;
 import com.ssafy.arttab.member.domain.MailAuth;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.dto.LoginEmail;
-import com.ssafy.arttab.member.dto.request.*;
 import com.ssafy.arttab.member.dto.User;
 import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
 import com.ssafy.arttab.member.dto.request.IntroUpdateRequest;
@@ -25,7 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -175,6 +173,7 @@ public class MemberService {
     public String login(final User user){
         Member member = memberRepository.findByEmail(user.getEmail())
                 .orElseThrow(NoSuchMemberException::new);
+
         if(member.getAuth()!=1){
             throw new IllegalArgumentException("메일 인증으로 이동");
         }
@@ -184,7 +183,7 @@ public class MemberService {
         //토큰 발급
         HashMap<String, Object> payload = new HashMap();
         payload.put("Id",member.getId());
-        return JWTUtil.createToken(payload);
+        return jwtUtil.createToken(payload);
     }
     /**
      * 닉네임 등록
