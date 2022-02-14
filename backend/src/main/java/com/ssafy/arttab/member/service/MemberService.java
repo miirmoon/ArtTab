@@ -23,6 +23,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -67,12 +68,13 @@ public class MemberService {
         var password = BCrypt.hashpw(memberSaveRequest.getPassword(),BCrypt.gensalt());
 
         // 프로필 사진 기본 이미지로 설정
-        String defaultSaveFolder=System.getProperty("user.dir") + "\\profile\\default.jpg";
+        String defaultSaveFolder=System.getProperty("user.home") + File.separator+"profile"+File.separator+"default.jpg";
 
         Member member = Member.builder()
                 .email(memberSaveRequest.getEmail())
                 .password(password)
                 .saveFolder(defaultSaveFolder)
+                .saveFilename("default.jpg")
                 .build();
 
         try{
