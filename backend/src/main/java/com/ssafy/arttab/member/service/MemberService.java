@@ -49,6 +49,9 @@ public class MemberService {
     private final FollowRepository followRepository;
     private final ArtworkRepository artworkRepository;
 
+    private final String artworkImgUrl="http://localhost:8080/artworks/";
+    private final String profileImgUrl="http://localhost:8080/profiles/";
+
     /**
      * 회원 등록
      * @param memberSaveRequest
@@ -320,9 +323,14 @@ public class MemberService {
                 .followingNum(followRepository.findAllFollowingCnt(profileMember))
                 .artworkNum(artworkRepository.findNumByMemberId(profileMember))
                 .email(profileMemberEmail)
-                .profileImageUrl("file:///"+memberRepository.findMemberByEmail(profileMemberEmail).get().getSaveFolder())
+                .profileImageUrl(profileImgUrl+memberRepository.findMemberByEmail(profileMemberEmail).get().getSaveFilename())
                 .build();
 
         return response;
+    }
+
+    public void updateSaveFilename(LoginEmail loginEmail, String saveFileName) {
+        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow();
+        member.updateSaveFileName(saveFileName);
     }
 }
