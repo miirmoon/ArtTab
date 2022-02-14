@@ -1,5 +1,9 @@
 package com.ssafy.arttab.config;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Component;
+
 /**
  * @packageName : com.ssafy.arttab.config
  * @fileName : JWTUtil
@@ -11,9 +15,16 @@ package com.ssafy.arttab.config;
  * @submissions : 1
  * @description :
  **/
+@RequiredArgsConstructor
+@Component
 public class JWTUtil {
-//
-//    @Value("${jwt.algorithm}")
-//    private final String secretKey;
-//    private final validity;
+
+        private String secretKey = "banban";
+
+
+        private long tokenValidTime = 60 * 60 * 1000L;
+        private final UserDetailsService userDetailsService;
+
+
+
 }
