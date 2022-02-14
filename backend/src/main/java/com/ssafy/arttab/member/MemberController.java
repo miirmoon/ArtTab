@@ -2,6 +2,7 @@ package com.ssafy.arttab.member;
 
 
 import com.ssafy.arttab.member.dto.LoginEmail;
+import com.ssafy.arttab.member.dto.User;
 import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
 import com.ssafy.arttab.member.dto.request.IntroUpdateRequest;
 import com.ssafy.arttab.member.dto.request.MemberSaveRequest;
@@ -10,6 +11,7 @@ import com.ssafy.arttab.member.dto.response.MemberInfoResponse;
 import com.ssafy.arttab.member.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -75,12 +77,12 @@ public class MemberController {
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
-//    @ApiOperation(value = "로그인", notes = "Access-token과 로그인 결과 메시지를 반환한다.", response = String.class)
-//    @PostMapping("/login")
-//    public ResponseEntity<String> login(@RequestBody @ApiParam(value = "로그인 시 필요한 회원정보 (이메일, 비밀번호).", required = true) User user) {
-//
-////        return ResponseEntity.ok().body(memberService.login(user));
-//    }
+    @ApiOperation(value = "로그인", notes = "Access-token과 로그인 결과 메시지를 반환한다.", response = String.class)
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody @ApiParam(value = "로그인 시 필요한 회원정보 (이메일, 비밀번호).", required = true) User user) {
+        memberService.
+        return ResponseEntity.ok().body(memberService.login(user));
+    }
 
     @ApiOperation(value = "닉네임 중복체크")
     @GetMapping("/idCk")
