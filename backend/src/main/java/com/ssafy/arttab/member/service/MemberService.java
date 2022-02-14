@@ -179,7 +179,7 @@ public class MemberService {
             throw new NoauthorizedMemberException();
         }
         if (!BCrypt.checkpw(user.getPassword(), member.getPassword())) {
-            throw new PasswordMismatchException("잘못된비밀번호");
+            throw new PasswordMismatchException("passwordMismatch");
         }
         //토큰 발급
         HashMap<String, Object> payload = new HashMap();
