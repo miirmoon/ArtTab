@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
  * @description :
  **/
 public class NoauthorizedMemberException extends CustomException {
-    private static final String MESSAGE = "인증되지 않는 회원";
+    private static final String MESSAGE = "NoauthorizedMember";
 
     public NoauthorizedMemberException() {
         super(MESSAGE, HttpStatus.UNAUTHORIZED);
