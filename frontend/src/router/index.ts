@@ -13,7 +13,10 @@ import Profile from "@/views/Profile.vue";
 // 검색 결과 페이지
 import SearchResult from "@/views/SearchResult.vue";
 // 작품 페이지
-import ArtworkDetail from "@/views/ArtworkDetail.vue";
+import Artwork from "@/views/Artwork.vue";
+import ArtworkDetail from "@/components/artwork/ArtworkDetail.vue";
+import ArtworkCreate from "@/components/artwork/ArtworkCreate.vue";
+import ArtworkUpdate from "@/components/artwork/ArtworkUpdate.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -54,9 +57,10 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: "/profile",
+    path: "/profile/:id",
     name: "Profile",
     component: Profile,
+    props: true,
   },
   {
     path: "/searchresult",
@@ -64,9 +68,27 @@ const routes: Array<RouteRecordRaw> = [
     component: SearchResult,
   },
   {
-    path: "/artworkdetail",
-    name: "ArtworkDetail",
-    component: ArtworkDetail,
+    path: "/artwork",
+    name: "Artwork",
+    component: Artwork,
+    children: [
+      {
+        path: "detail/:id",
+        name: "ArtworkDetail",
+        component: ArtworkDetail,
+      },
+      {
+        path: "/artworkcreate",
+        name: "ArtworkCreate",
+        component: ArtworkCreate,
+      },
+      {
+        path: "/artworkupdate",
+        name: "ArtworkUpdate",
+        component: ArtworkUpdate,
+        props: true,
+      },
+    ],
   },
 ];
 
