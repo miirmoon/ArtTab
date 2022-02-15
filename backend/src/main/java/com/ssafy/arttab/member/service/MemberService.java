@@ -9,7 +9,6 @@ import com.ssafy.arttab.follow.FollowRepository;
 import com.ssafy.arttab.member.domain.MailAuth;
 import com.ssafy.arttab.member.domain.Member;
 import com.ssafy.arttab.member.dto.LoginEmail;
-import com.ssafy.arttab.member.dto.request.*;
 import com.ssafy.arttab.member.dto.User;
 import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
 import com.ssafy.arttab.member.dto.request.IntroUpdateRequest;
@@ -24,7 +23,8 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.io.File;
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -50,6 +50,9 @@ public class MemberService {
     private final FollowRepository followRepository;
     private final ArtworkRepository artworkRepository;
 
+    private final String artworkImgUrl="http://localhost:8080/artworks/";
+    private final String profileImgUrl="http://localhost:8080/profiles/";
+
     /**
      * 회원 등록
      * @param memberSaveRequest
@@ -65,12 +68,13 @@ public class MemberService {
         var password = BCrypt.hashpw(memberSaveRequest.getPassword(),BCrypt.gensalt());
 
         // 프로필 사진 기본 이미지로 설정
-        String defaultSaveFolder=System.getProperty("user.dir") + "\\profile\\default.jpg";
+        String defaultSaveFolder=System.getProperty("user.home") + File.separator+"profile"+File.separator+"default.jpg";
 
         Member member = Member.builder()
                 .email(memberSaveRequest.getEmail())
                 .password(password)
                 .saveFolder(defaultSaveFolder)
+                .saveFilename("default.jpg")
                 .build();
 
         try{
@@ -171,17 +175,20 @@ public class MemberService {
      * 회원 로그인
      * @param user
      */
-    public void login(final User user){
+    public String login(final User user){
         Member member = memberRepository.findByEmail(user.getEmail())
-                .orElseThrow(() -> new NoSuchMemberException());
+                .orElseThrow(NoSuchMemberException::new);
+
         if(member.getAuth()!=1){
-            throw new IllegalArgumentException("인증 안된 회원");
+            throw new IllegalArgumentException("메일 인증으로 이동");
         }
         if (!BCrypt.checkpw(user.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("잘못된 비밀번호입니다.");
+            throw new IllegalArgumentException("비밀번호 잘못됨");
         }
         //토큰 발급
-        return jwtUtil.createToken(member.getId());
+        HashMap<String, Object> payload = new HashMap();
+        payload.put("Id",member.getId());
+        return jwtUtil.createToken(payload);
     }
     /**
      * 닉네임 등록
@@ -297,8 +304,8 @@ public class MemberService {
     // 프로필 페이지 불러오기
     public ProfileInfoResponse getProfileInfo(String loginEmail, String profileMemberEmail){
 
-        Long loginMember=memberRepository.findMemberByEmail(loginEmail).getId(); // 로그인된 회원 아이디
-        Long profileMember=memberRepository.findMemberByEmail(profileMemberEmail).getId(); // 프로필을 주인 아이디
+        Long loginMember=memberRepository.findMemberByEmail(loginEmail).get().getId(); // 로그인된 회원 아이디
+        Long profileMember=memberRepository.findMemberByEmail(profileMemberEmail).get().getId(); // 프로필을 주인 아이디
 
         String isFollow = "FALSE";
         if(loginMember==profileMember) { // 로그인한 사용자가 본인 프로필 조회하려고 할 때
@@ -312,15 +319,20 @@ public class MemberService {
         }
 
         ProfileInfoResponse response = ProfileInfoResponse.builder()
-                .nickname(memberRepository.findMemberByEmail(profileMemberEmail).getNickname())
+                .nickname(memberRepository.findMemberByEmail(profileMemberEmail).get().getNickname())
                 .isFollow(isFollow)
                 .followedNum(followRepository.findAllFollowedCnt(profileMember))
                 .followingNum(followRepository.findAllFollowingCnt(profileMember))
                 .artworkNum(artworkRepository.findNumByMemberId(profileMember))
                 .email(profileMemberEmail)
-                .profileImageUrl("file:///"+memberRepository.findMemberByEmail(profileMemberEmail).getSaveFolder())
+                .profileImageUrl(profileImgUrl+memberRepository.findMemberByEmail(profileMemberEmail).get().getSaveFilename())
                 .build();
 
         return response;
+    }
+
+    public void updateSaveFilename(LoginEmail loginEmail, String saveFileName) {
+        var member=memberRepository.findByEmail(loginEmail.getEmail()).orElseThrow();
+        member.updateSaveFileName(saveFileName);
     }
 }
