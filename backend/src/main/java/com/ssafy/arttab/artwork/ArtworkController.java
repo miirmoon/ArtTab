@@ -45,8 +45,8 @@ public class ArtworkController {
         LocalDateTime time=LocalDateTime.now();
         String originFileName=file.getOriginalFilename();
         String saveFileName=new MD5Generator(originFileName+time).toString()+file.getOriginalFilename();
-        String upperPath=System.getProperty("user.dir") + "img" + File.separator + "artwork"; // artwork 디렉토리
-        String savePath=upperPath; // artwork의 사용자 디렉토리
+        String upperPath=System.getProperty("user.dir") + "img" ; // artwork 디렉토리
+        String savePath=upperPath + File.separator + "artwork"; // artwork의 사용자 디렉토리
 
         // 디버깅용
         System.out.println("originFileName: "+originFileName);
