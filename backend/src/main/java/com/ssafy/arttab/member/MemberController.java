@@ -4,14 +4,18 @@ package com.ssafy.arttab.member;
 import com.ssafy.arttab.artwork.dto.MD5Generator;
 import com.ssafy.arttab.exception.member.DuplicateException;
 import com.ssafy.arttab.member.dto.LoginEmail;
-import com.ssafy.arttab.member.dto.request.*;
+import com.ssafy.arttab.member.dto.User;
+import com.ssafy.arttab.member.dto.request.AuthNumCheckRequest;
+import com.ssafy.arttab.member.dto.request.IntroUpdateRequest;
+import com.ssafy.arttab.member.dto.request.MemberSaveRequest;
+import com.ssafy.arttab.member.dto.request.PasswordUpdateRequest;
 import com.ssafy.arttab.member.dto.response.MemberInfoResponse;
 import com.ssafy.arttab.member.dto.response.ProfileInfoResponse;
 import com.ssafy.arttab.member.service.MemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -81,12 +85,11 @@ public class MemberController {
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
-//    @ApiOperation(value = "로그인", notes = "Access-token과 로그인 결과 메시지를 반환한다.", response = String.class)
-//    @PostMapping("/login")
-//    public ResponseEntity<String> login(@RequestBody @ApiParam(value = "로그인 시 필요한 회원정보 (이메일, 비밀번호).", required = true) User user) {
-//
-////        return ResponseEntity.ok().body(memberService.login(user));
-//    }
+    @ApiOperation(value = "로그인", notes = "Access-token과 로그인 결과 메시지를 반환한다.", response = String.class)
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody @ApiParam(value = "로그인 시 필요한 회원정보 (이메일, 비밀번호).", required = true) User user) {
+        return ResponseEntity.ok().body(memberService.login(user));
+    }
 
     @ApiOperation(value = "닉네임 중복체크")
     @GetMapping("/idCk")
@@ -120,7 +123,6 @@ public class MemberController {
         var memberInfoResponse = memberService.getMemberInfo(loginEmail);
         return ResponseEntity.ok().body(memberInfoResponse);
     }
-
 
     @ApiOperation(value = "회원삭제", notes = "회원번호로 DB 삭제 성공여부에 따라 'success' 또는 'fail' 문자열을 반환한다.", response = String.class)
     @DeleteMapping("/me")
@@ -161,7 +163,7 @@ public class MemberController {
 
         // 원래 프로필 사진 삭제하기
         String parentSaveFolder=memberService.getParentFolder(email); // 이메일에 해당하는 사용자의 원래 프로필 사진
-        String defaultSaveFolder=System.getProperty("user.dir") + "\\profile\\default.jpg"; // 기존에 프로필 사진 설정하지 않았을 경우
+        String defaultSaveFolder=System.getProperty("user.home") +File.separator+"profile"+File.separator+"default.jpg"; // 기존에 프로필 사진 설정하지 않았을 경우
         if(!parentSaveFolder.equals(defaultSaveFolder)) { // 기본 이미지로 설정되어 있는 경우에는 삭제 안함
             File parentFile=new File(parentSaveFolder);
             parentFile.delete();
@@ -170,9 +172,9 @@ public class MemberController {
         // 프로필 사진 저장하기
         LocalDateTime time = LocalDateTime.now();
         String originFileName = file.getOriginalFilename();
-        String saveFileName = new MD5Generator(originFileName + time).toString();
-        String upperSavePath="C:"+File.separator+"profile"; // 프로필 폴더
-        String savePath = upperSavePath + File.separator +email; // 프로필 사진 주인 이메일
+        String saveFileName = new MD5Generator(originFileName + time).toString()+file.getOriginalFilename();
+        String upperSavePath=System.getProperty("user.home")+ File.separator+"profile"; // 프로필 폴더
+        String savePath = upperSavePath; // 프로필 사진 주인 이메일
 
         // profile 폴더가 없으면 폴더 생성
             if(!upperSavePath.isEmpty()){
@@ -199,6 +201,7 @@ public class MemberController {
         memberService.addNickname(loginEmail, nickname); // 닉네임 변경
         memberService.updateMember(loginEmail, new IntroUpdateRequest(intro)); // 자기소개 변경
         memberService.updateSaveFolder(loginEmail, saveFolder);
+        memberService.updateSaveFilename(loginEmail, saveFileName);
 
        return new ResponseEntity<>(message, HttpStatus.OK);
 
