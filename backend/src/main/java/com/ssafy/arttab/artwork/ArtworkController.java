@@ -1,12 +1,11 @@
 package com.ssafy.arttab.artwork;
 
 import com.ssafy.arttab.artwork.dto.*;
-import com.ssafy.arttab.member.dto.response.MemberInfoResponse;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,14 +15,15 @@ import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 public class ArtworkController {
+
+    @Value("${access.url.location}")
+    private String location;
 
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
@@ -43,8 +43,19 @@ public class ArtworkController {
         LocalDateTime time=LocalDateTime.now();
         String originFileName=file.getOriginalFilename();
         String saveFileName=new MD5Generator(originFileName+time).toString()+file.getOriginalFilename();
-        String upperPath=System.getProperty("user.home")+File.separator+"artwork"; // artwork 디렉토리
-        String savePath=upperPath; // artwork의 사용자 디렉토리
+
+        String upperPath = "";
+        String savePath = "";
+        if ("dev".equals(location)){
+            upperPath = System.getProperty("user.home") + File.separator + "artwork"; // 프로필 폴더
+            savePath = upperPath; // 프로필 사진 주인 이메일
+        }else if ("ec2".equals(location)){
+            upperPath = System.getProperty("user.dir") + "img";
+            savePath = upperPath + File.separator + "artwork"; // artwork의 사용자 디렉토리
+
+        }
+
+
 
         // 디버깅용
         System.out.println("originFileName: "+originFileName);
