@@ -34,7 +34,7 @@ public class ArtworkService {
     @Value("${access.url.artworks}")
     private String artworkImgUrl;
 
-    @Value("${access.url.profiles")
+    @Value("${access.url.profiles}")
     private String profileImgUrl;
 
     @Transactional
@@ -67,6 +67,8 @@ public class ArtworkService {
                 Artwork.builder()
                         .writer(memberRepository.findById(artworkDto.getWriterId()).get())
                         .galleryItemList(null)
+                        .likeList(null)
+                        .commentList(null)
                         .title(artworkDto.getTitle())
                         .description(artworkDto.getDescription())
                         .originFileName(artworkDto.getOriginFileName())
@@ -180,7 +182,7 @@ public class ArtworkService {
                     .artworkTitle(artwork.getTitle())
                     .memberNickname(writer.getNickname())
                     .memberId(writer.getId())
-                    .saveFolder(artworkImgUrl+artwork.getSaveFolder())
+                    .saveFolder(artworkImgUrl+artwork.getSaveFileName())
                     .likeOrNot(true)
                     .artworkId(artwork.getId())
                     .regdate(artwork.getRegdate())

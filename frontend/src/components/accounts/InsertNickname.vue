@@ -60,14 +60,17 @@ export default defineComponent({
   },
   watch: {
     nickname: function () {
-      this.checkNickname();
+      if (!this.nickname) {
+        this.isCompleted = false;
+        this.valid.nickname = false;
+      } else {
+        this.checkNickname();
+      }
     },
   },
   methods: {
     // 닉네임 유효성 검사
     checkNickname() {
-      // 닉네임 형식 검사 필요시 추가
-
       // 닉네임 중복 검사
       AccountsAPI.checkNickname(this.nickname)
         .then((res: ResponseData) => {
@@ -88,8 +91,8 @@ export default defineComponent({
       AccountsAPI.addNickname(this.joinEmail, this.nickname)
         .then((res: ResponseData) => {
           if (res.data === "success") {
-            // 로그인 처리 후 메인페이지로 이동
-            this.$router.push({ name: "Main" });
+            // 로그인 처리 후 메인페이지로 이동 추가하기
+            this.$router.push({ name: "Login" });
           } else {
             alert("닉네임 등록 중 오류가 발생했습니다.");
           }
