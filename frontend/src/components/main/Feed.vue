@@ -17,7 +17,17 @@
               </span>
               <span class="links">
                 <!-- like button -->
-                <a href="#"><heart></heart></a>
+                <a href="#">
+                  <like-button
+                    class="icon"
+                    :liked="likeInfo.likeOrNot"
+                    :artworkId="item.artworkId"
+                    :userId="userInfo.id"
+                    @toggle="toggleLike"
+                    @message="showToastMessage"
+                  ></like-button>
+                  <toast-message ref="toast"></toast-message>
+                </a>
               </span>
             </figcaption>
           </figure>
@@ -40,12 +50,11 @@
 import { defineComponent } from "vue";
 import ArtworkAPI from "@/apis/artworkAPI";
 import Observer from "@/components/main/child/Observer.vue";
-// import LikeButton from "@/components/common/LikeButton.vue";
+import LikeButton from "@/components/common/LikeButton.vue";
 import ToastMessage from "@/components/common/ToastMessage.vue";
 import { mapState } from "vuex";
 import Loader from "@/components/main/child/Loader.vue";
 import { ArrowUpBoldCircleOutline } from "mdue";
-import { Heart } from "mdue";
 
 const accountsStore = "accountsStore";
 
@@ -57,26 +66,34 @@ export default defineComponent({
       items: [] as any,
       contentsDone: false,
       showLoader: false,
+      likeInfo: [] as any,
     };
   },
   components: {
     Observer,
-    // LikeButton,
+    LikeButton,
     Loader,
     ArrowUpBoldCircleOutline,
-    Heart,
   },
   methods: {
     async intersected() {
-      const res = await ArtworkAPI.getArtworkList(this.page);
+      const res = await ArtworkAPI.getArtworkList(this.userInfo.id, this.page);
       this.page++;
       const items = res.data;
-      console.log(items.length);
-      if (items.length <= 19) {
+      let size = items.length;
+      if (size <= 19) {
         this.contentsDone = true;
         this.showLoader = true;
       }
       this.items = [...this.items, ...items];
+      for (let i = 0; i < size; i++) {
+        this.likeInfo.push({
+          likeOrNot: items[i].likeOrNot,
+        })
+      }
+    },
+    toggleLike(result: boolean) {
+      this.likeInfo.likeOrNot = result;
     },
     showToastMessage(msg: string) {
       (this.$refs["toast"] as typeof ToastMessage).showToast(msg);
@@ -181,9 +198,8 @@ figure.card {
 				align-items: center;
 				color: $red;
 				margin-left: 10px;
-				font-size: 1.2rem;
+				font-size: $font-large;
 				opacity: 0.65;
-				border-radius: 50%;
 				overflow: hidden;
 				&:hover {
 					opacity: 1;
