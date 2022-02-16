@@ -51,6 +51,7 @@ export const accountsStore: Module<AccountsState, RootState> = {
     async getLogin({ commit }, user: LoginInfo) {
       await AccountsAPI.login(user)
         .then((res: ResponseData) => {
+          console.log(res);
           if (res.data) {
             commit("SET_IS_LOGIN", true);
             sessionStorage.setItem("access-token", res.data);
@@ -67,6 +68,10 @@ export const accountsStore: Module<AccountsState, RootState> = {
           commit("SET_IS_LOGIN", false);
           alert("비밀번호가 틀렸습니다.");
         });
+    },
+    async getSnsLogin({ commit }, token: string) {
+      commit("SET_IS_LOGIN", true);
+      sessionStorage.setItem("access-token", token);
     },
     // 사용자 정보 불러오기
     async getUserInfo({ commit }, email: string) {
