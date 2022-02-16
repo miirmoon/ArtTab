@@ -169,9 +169,9 @@ public class MemberController {
         // 원래 프로필 사진 삭제하기
         String parentSaveFolder=memberService.getParentFolder(email); // 이메일에 해당하는 사용자의 원래 프로필 사진
         String defaultSaveFolder = "";
-        if (location == "dev"){
+        if ("dev".equals(location)){
             defaultSaveFolder = System.getProperty("user.dir") + File.separator + "profile" + File.separator + "default.jpg"; // 기존에 프로필 사진 설정하지 않았을 경우
-        }else if (location == "ec2"){
+        }else if ("ec2".equals(location)){
             defaultSaveFolder = System.getProperty("user.dir")  + "img" + File.separator + "default.jpg"; // 기존에 프로필 사진 설정하지 않았을 경우
         }
 
@@ -186,10 +186,10 @@ public class MemberController {
         String saveFileName = new MD5Generator(originFileName + time).toString()+file.getOriginalFilename();
         String upperSavePath = "";
         String savePath = "";
-        if (location == "dev"){
+        if ("dev".equals(location)){
             upperSavePath=System.getProperty("user.home")+ File.separator+"profile"; // 프로필 폴더
             savePath = upperSavePath; // 프로필 사진 주인 이메일
-        }else if (location == "ec2"){
+        }else if ("ec2".equals(location)){
             upperSavePath = System.getProperty("user.dir") + "img";
             savePath = upperSavePath + File.separator + "profile";
         }

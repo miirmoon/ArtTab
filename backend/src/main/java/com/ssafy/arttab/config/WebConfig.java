@@ -44,7 +44,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        if (location == "dev") {
+        if ("dev".equals(location)) {
             // local & dev
             registry.addResourceHandler("/artworks/**")
                     .addResourceLocations("file:///" + System.getProperty("user.home") + File.separator + "artwork" + File.separator);
@@ -54,7 +54,7 @@ public class WebConfig implements WebMvcConfigurer {
                     .addResourceLocations("file:///" + System.getProperty("user.dir") + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "static" + File.separator);
         }
         //ec2
-        else if(location == "ec2") {
+        else if("ec2".equals(location)) {
             registry.addResourceHandler("/artworks/**")
                     .addResourceLocations("file:///" + System.getProperty("user.dir") + "img" + File.separator + "artwork" + File.separator);
             registry.addResourceHandler("/profiles/**")

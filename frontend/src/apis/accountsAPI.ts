@@ -11,7 +11,7 @@ class AccountsAPI {
 
   // 이메일 중복확인: 성공 시 'success', 실패 시(중복이 있는 경우) 오류메시지 반환
   checkEmail(email: string) {
-    return api.post(`/member/emailCk`, email);
+    return api.get(`/member/emailCk`, { params: { email: email } });
   }
 
   // 이메일 (재)전송: 인증번호 변경 후 해당 이메일로 전송, 성공여부에 따라 'success' 또는 'fail' 문자열 반환
@@ -29,7 +29,7 @@ class AccountsAPI {
 
   // 닉네임 중복확인: 성공 시 'success', 실패 시 오류메시지 반환
   checkNickname(nickname: string) {
-    return api.post(`/member/idCk`, nickname);
+    return api.get(`/member/idCk`, { params: { nickname: nickname } });
   }
 
   // 닉네임 등록: 성공여부에 따라 'success' 또는 'fail' 문자열 반환
@@ -69,9 +69,9 @@ class AccountsAPI {
     return api.delete(`/member/me`, { data: { email: email } });
   }
   // 회원 프로필 정보 리턴하기
-  getProfileInfo(loginEmail: string, profileMemberEmail: string) {
+  getProfileInfo(loginId: number, profileMemberId: number) {
     return api.get(
-      `/member/profile?loginEmail=${loginEmail}&profileMemberEmail=${profileMemberEmail}`
+      `/member/profile?loginId=${loginId}&profileMemberId=${profileMemberId}`
     );
   }
 }
