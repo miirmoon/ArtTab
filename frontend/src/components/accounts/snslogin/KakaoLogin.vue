@@ -23,7 +23,7 @@ export default defineComponent({
   methods: {
     ...mapActions(accountsStore, ["getSnsLogin", "getUserInfo", "storeEmail"]),
     // 응답 코드에 따른 분기
-    async handleRespose() {
+    handleRespose() {
       // 카카오 인가코드
       const code = this.$route.query.code;
       const error = this.$route.query.error;
@@ -36,13 +36,13 @@ export default defineComponent({
           .then((res: ResponseData) => {
             // 가입회원일 때 로그인 처리하기
             if (res.data.result === "success") {
-              this.getSnsLogin(res.data.token);
-              this.getUserInfo(res.data.email);
-              this.$router.push({ name: "Main" });
+              this.getLogin(res);
             }
             // 미가입 회원일 때 닉네임 등록으로 이동
             else {
-              this.storeEmail(res.data.email);
+              this.storeEmail({ email: res.data.email });
+              // 원래 실제 토큰이 들어가야 함
+              this.getSnsLogin("token");
               this.$router.push("InsertNickname");
             }
           })
@@ -61,6 +61,11 @@ export default defineComponent({
         alert("카카오 로그인이 취소되었습니다.");
         this.$router.push({ name: "Login" });
       }
+    },
+    async getLogin(res: ResponseData) {
+      await this.getSnsLogin(res.data.token);
+      await this.getUserInfo(res.data.email);
+      this.$router.push({ name: "Main" });
     },
   },
 });
