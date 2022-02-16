@@ -13,6 +13,7 @@ import FindPassword from "@/components/accounts/FindPassword.vue";
 import KakaoLogin from "@/components/accounts/kakao/KakaoLogin.vue";
 // 내 정보 페이지
 import Profile from "@/views/Profile.vue";
+import DecorateGallery from "@/components/profile/DecorateGallery.vue";
 // 검색 결과 페이지
 import SearchResult from "@/views/SearchResult.vue";
 // 작품 페이지
@@ -87,6 +88,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "Profile",
     component: Profile,
     props: true,
+  },
+  {
+    path: "/decogallery",
+    name: "DecorateGallery",
+    component: DecorateGallery,
   },
   {
     path: "/searchresult",
