@@ -2,6 +2,7 @@ package com.ssafy.arttab.member.service;
 
 import com.ssafy.arttab.artwork.ArtworkRepository;
 import com.ssafy.arttab.config.JWTUtil;
+import com.ssafy.arttab.exception.authorization.NoauthorizedMemberException;
 import com.ssafy.arttab.exception.member.DuplicateException;
 import com.ssafy.arttab.exception.member.NoSuchMemberException;
 import com.ssafy.arttab.exception.member.PasswordMismatchException;
@@ -19,6 +20,7 @@ import com.ssafy.arttab.member.dto.response.ProfileInfoResponse;
 import com.ssafy.arttab.member.repository.MailAuthRepogitory;
 import com.ssafy.arttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,8 +52,14 @@ public class MemberService {
     private final FollowRepository followRepository;
     private final ArtworkRepository artworkRepository;
 
-    private final String artworkImgUrl="http://localhost:8080/artworks/";
-    private final String profileImgUrl="http://localhost:8080/profiles/";
+//    @Value("${access.url.artworks}")
+//    private String artworkImgUrl;
+
+    @Value("${access.url.profiles}")
+    private String profileImgUrl;
+
+    @Value("${access.url.profileDefault}")
+    private String profileDefaultImgUrl;
 
     /**
      * 회원 등록
@@ -68,7 +76,7 @@ public class MemberService {
         var password = BCrypt.hashpw(memberSaveRequest.getPassword(),BCrypt.gensalt());
 
         // 프로필 사진 기본 이미지로 설정
-        String defaultSaveFolder=System.getProperty("user.home") + File.separator+"profile"+File.separator+"default.jpg";
+        String defaultSaveFolder=System.getProperty("user.dir")+File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"static"+File.separator+"default.jpg";
 
         Member member = Member.builder()
                 .email(memberSaveRequest.getEmail())
@@ -180,10 +188,10 @@ public class MemberService {
                 .orElseThrow(NoSuchMemberException::new);
 
         if(member.getAuth()!=1){
-            throw new IllegalArgumentException("메일 인증으로 이동");
+            throw new NoauthorizedMemberException();
         }
         if (!BCrypt.checkpw(user.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("비밀번호 잘못됨");
+            throw new PasswordMismatchException("passwordMismatch");
         }
         //토큰 발급
         HashMap<String, Object> payload = new HashMap();
@@ -222,12 +230,12 @@ public class MemberService {
 
     /**
      * 비밀번호 수정
-     * @param loginEmail
+     * @param
      * @param passwordUpdateRequest
      */
     @Transactional
-    public void updatePassword(final LoginEmail loginEmail, final PasswordUpdateRequest passwordUpdateRequest){
-        var member = memberRepository.findByEmail(loginEmail.getEmail())
+    public void updatePassword(final PasswordUpdateRequest passwordUpdateRequest){
+        var member = memberRepository.findByEmail(passwordUpdateRequest.getLoginEmail())
                 .orElseThrow(NoSuchMemberException::new);
         if(BCrypt.checkpw(passwordUpdateRequest.getPassword(),member.getPassword())){
             member.updatepassword(BCrypt.hashpw(passwordUpdateRequest.getNewPassword(),BCrypt.gensalt()));
@@ -302,30 +310,42 @@ public class MemberService {
     }
 
     // 프로필 페이지 불러오기
-    public ProfileInfoResponse getProfileInfo(String loginEmail, String profileMemberEmail){
+    public ProfileInfoResponse getProfileInfo(Long loginId, Long profileMemberId){
 
-        Long loginMember=memberRepository.findMemberByEmail(loginEmail).get().getId(); // 로그인된 회원 아이디
-        Long profileMember=memberRepository.findMemberByEmail(profileMemberEmail).get().getId(); // 프로필을 주인 아이디
+//        Long loginMemberId=memberRepository.findById(loginId).get().getId(); // 로그인된 회원 아이디
+//        Long profileMember=memberRepository.findById(profileMemberId).get().getId(); // 프로필을 주인 아이디
+
+        Member loginMember=memberRepository.findById(loginId).get();
+        Member profileMember=memberRepository.findById(profileMemberId).get();
 
         String isFollow = "FALSE";
-        if(loginMember==profileMember) { // 로그인한 사용자가 본인 프로필 조회하려고 할 때
+        if(loginMember.getId()==profileMember.getId()) { // 로그인한 사용자가 본인 프로필 조회하려고 할 때
             isFollow="ME";
         }
         else {
-            int followOrNot = followRepository.isFollow(loginMember, profileMember);
+            int followOrNot = followRepository.isFollow(loginMember.getId(), profileMember.getId());
             if (followOrNot != 0) { // 팔로우 관계일 때
                 isFollow = "TRUE";
             }
         }
 
+        String defaultProfileImgUrl=System.getProperty("user.dir")+File.separator+"src"+File.separator+"main"+File.separator+"resources"+File.separator+"static"+File.separator+"default.jpg";
+        String profileImg=profileMember.getSaveFolder();
+
+        String profileImageUrl=profileDefaultImgUrl+profileMember.getSaveFilename(); // 프로필 사진 url
+//        if(!profileImg.equals(defaultProfileImgUrl)){ // 프로필 이미지가 기본 프로필 이미지 상태가 아닐 때
+//            profileImageUrl=profileImgUrl+memberRepository.findById(profileMemberId).get().getSaveFilename();
+//        }
+
         ProfileInfoResponse response = ProfileInfoResponse.builder()
-                .nickname(memberRepository.findMemberByEmail(profileMemberEmail).get().getNickname())
+                .nickname(memberRepository.findById(profileMemberId).get().getNickname())
                 .isFollow(isFollow)
-                .followedNum(followRepository.findAllFollowedCnt(profileMember))
-                .followingNum(followRepository.findAllFollowingCnt(profileMember))
-                .artworkNum(artworkRepository.findNumByMemberId(profileMember))
-                .email(profileMemberEmail)
-                .profileImageUrl(profileImgUrl+memberRepository.findMemberByEmail(profileMemberEmail).get().getSaveFilename())
+                .followedNum(followRepository.findAllFollowedCnt(profileMember.getId()))
+                .followingNum(followRepository.findAllFollowingCnt(profileMember.getId()))
+                .artworkNum(artworkRepository.findNumByMemberId(profileMember.getId()))
+                .email(memberRepository.findById(profileMemberId).get().getEmail())
+                .profileImageUrl(profileImageUrl)
+                .intro(profileMember.getIntro())
                 .build();
 
         return response;

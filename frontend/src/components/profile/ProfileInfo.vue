@@ -1,10 +1,4 @@
 <template>
-  {{ userInfo.id }}
-  {{ userInfo.email }}
-  {{ userInfo.intro }}
-  {{ userInfo.nickname }}
-  {{ profileInfo.id }}
-
   <!-- Modal -->
   <!-- Profile Edit Modal -->
   <transition name="fade" appear>
@@ -18,27 +12,50 @@
     <div class="modal" v-if="isOpen == true">
       <h2>내 정보 수정</h2>
       <div class="profile-image" style="float: none">
-        <img src="https://via.placeholder.com/150/92c952" />
+        <label for="file">
+          <img
+            v-if="tempimage"
+            class="tempimage"
+            :src="tempimage"
+            style="cursor: pointer"
+          />
+          <img
+            v-else
+            :src="require(`@/assets/images/plus-circle.png`)"
+            class="altimg"
+          />
+        </label>
       </div>
+      <div class="input-div" style="display: none">
+        <input
+          ref="profileImg"
+          id="file"
+          type="file"
+          accept="image/*"
+          @change="onInputImage"
+        />
+      </div>
+      <div class="button" onclick="onclick=document.all.file.click()"></div>
       <close-button
         :closed="isClose"
         class="profile-close-btn"
         @click="closeEditModal"
       ></close-button>
       <div>
-        <button class="change-profile-pic-btn" @click="changeProfilePic">
+        <!-- <button class="change-profile-pic-btn" @click="changeProfilePic">
           프로필 사진 변경
-        </button>
-        <label for="nickname" class="label-text">닉네임</label>
+        </button> -->
+        <label for="nickname" class="label-text">닉네임 변경</label>
         <input
           type="nickname"
           id="nickname"
           class="input-text"
           name="nickname"
+          v-model="updatedInfo.nickname"
         />
-        <label for="intro" class="label-text">소개</label>
-        <input type="intro" id="intro" class="input-text" name="intro" />
-        <button class="done-profile-edit-btn" @click="doneEditInfo">
+        <label for="intro" class="label-text">소개 변경</label>
+        <input type="intro" id="intro" class="input-text" name="intro" v-model="updatedInfo.intro"/>
+        <button class="done-profile-edit-btn" @click="addUpdatedInfo">
           정보 수정 완료
         </button>
       </div>
@@ -66,17 +83,17 @@
       ></close-button>
       <h2>비밀번호 변경 및 계정 탈퇴</h2>
       <!-- 현재 비밀번호 -->
-      <label for="currentPwd" class="label-text">현재 비밀번호</label>
+      <label for="originalPwd" class="label-text">현재 비밀번호</label>
       <input-password
-        :password="currentPwd"
+        :password="originalPwd"
         :placetext="'기존 비밀번호를 입력해주세요.'"
-        id="currentPwd"
+        id="originalPwd"
         @inputVal="updateCurrentPwd"
       ></input-password>
       <!-- 변경할 비밀번호 입력 -->
       <label for="password" class="label-text">새 비밀번호</label>
       <input-password
-        :password="account.password"
+        :password="updatedPwd"
         :placetext="'영문, 특수문자 포함 8자리 이상'"
         id="password"
         @inputVal="updatePassword"
@@ -95,9 +112,6 @@
       <span class="alert" v-show="valid.checkPwd"
         >비밀번호가 일치하지 않습니다.</span
       >
-      <!-- 비밀번호 변경 완료 여부 모달 추가해야함 -->
-      <p class="alert" v-show="canChangePwd">비밀번호 변경에 성공했습니다.</p>
-      <p class="alert" v-show="!canChangePwd">비밀번호 변경에 실패했습니다.</p>
       <div>
         <button class="done-change-password-btn" @click="changePassword">
           변경 완료
@@ -141,48 +155,66 @@
 
   <!-- Profile Info -->
   <div>
-    <p>Profile Info Component</p>
     <div class="container">
       <div class="profile">
         <div class="profile-image">
-          <img
-            src="https://via.placeholder.com/150/92c952"
-            alt="profile image"
-          />
+          <img :src="profileInfo.profileImageUrl" alt="Profile Image" />
         </div>
         <div class="profile-user-settings">
-          <h1 class="profile-user-name">닉네임닉네임닉네임</h1>
-          <p class="profile-user-email">email@email.com</p>
+          <h1 class="profile-user-nickname">{{ profileInfo.nickname }}</h1>
+          <p class="profile-user-email">{{ profileInfo.email }}</p>
           <button
-            v-if="userInfo.id == profileInfo.id"
+            v-if="userInfo.id == this.$route.params.id"
             class="btn profile-edit-btn"
             @click="openEditModal"
           >
             내 정보 수정
           </button>
-          <follow-button
-            class="btn profile-edit-btn"
-            :followed="!follow"
-            @click="handleFollow"
-          ></follow-button>
+          <!-- <follow-button
+            :class="{ 'btn-white': artwork.followOrNot }"
+            :profileFollowed="isFollow"
+            :writerId="writerId"
+            :userId="userInfo.id"
+            @toggle="toggleFollow"
+            @message="showToastMessage"
+          >
+          </follow-button> -->
+          <toast-message ref="toast"></toast-message>
         </div>
         <div class="profile-stats">
           <ul>
-            <li><span class="profile-stat-count">164</span> 게시물</li>
-            <li><span class="profile-stat-count">188</span> 팔로워</li>
-            <li><span class="profile-stat-count">206</span> 팔로잉</li>
+            <li>
+              <span class="profile-stat-count">{{
+                profileInfo.artworkNum
+              }}</span>
+              게시물
+            </li>
+            <li>
+              <span class="profile-stat-count">{{
+                profileInfo.followedNum
+              }}</span>
+              팔로워
+            </li>
+            <li>
+              <span class="profile-stat-count">{{
+                profileInfo.followingNum
+              }}</span>
+              팔로잉
+            </li>
           </ul>
         </div>
         <div class="profile-intro">
-          <p>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nostrum,
-            maiores tenetur. Incidunt nihil vitae aliquid totam ex maxime sint
-            perferendis.
+          <p v-if="profileInfo.intro">
+            {{ profileInfo.intro }}
+          </p>
+          <p v-else>
+            <b>내 정보 수정버튼</b>을 클릭해 아트탭 회원들에게 자기소개를
+            해보세요!
           </p>
         </div>
         <div class="change-pwd-signout">
           <p
-            v-if="userInfo.id == profileInfo.id"
+            v-if="userInfo.id == this.$route.params.id"
             class="change-pwd-signout-text"
             @click="openChangePwdModal"
           >
@@ -196,42 +228,34 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import FollowButton from "./child/FollowButton.vue";
+// import FollowButton from "@/components/common/FollowButton.vue";
 import InputPassword from "../accounts/child/InputPassword.vue";
 import CloseButton from "../common/CloseButton.vue";
 import AccountsAPI from "@/apis/accountsAPI";
 import PV from "password-validator"; // 비밀번호 유효성 검사 라이브러리
+import { mapState, mapActions } from "vuex";
 import ResponseData from "@/types/ResponseData";
-import { mapState, mapMutations } from "vuex";
+import ProfileInfo from "@/types/ProfileInfo";
 
 const accountsStore = "accountsStore";
 
 export default defineComponent({
   data() {
     return {
-      // 내 프로필 조회 정보
-      account: {
-        // email: "",
-        // nickname: "",
-        // intro: "",
-        password: "",
-        // id: "",
-      },
-      updateInfo: {
-        password: "",
-        newPassword: "",
-      },
       // 타인 프로필 조회 정보
-      profileInfo: {
-        email: "",
-        nickname: "",
-        intro: "",
-        id: this.$route.params.id as unknown as number,
-      },
-      // 유효성 여부
+      profileInfo: {} as ProfileInfo,
+      // password
       checkPwd: "",
-      currentPwd: "",
-      follow: true,
+      originalPwd: "",
+      updatedPwd: "",
+      // profile edit modal
+      tempimage: "",
+      updatedInfo: {
+        file: "",
+        intro: "",
+        nickname: "",
+      },
+      follow: false,
       valid: {
         password: false,
         checkPwd: false,
@@ -246,6 +270,9 @@ export default defineComponent({
       passwordSchema: new PV(),
     };
   },
+  mounted() {
+    this.getProfileInfo();
+  },
   computed: {
     ...mapState(accountsStore, ["userInfo"]),
   },
@@ -255,7 +282,7 @@ export default defineComponent({
     },
   },
   components: {
-    FollowButton,
+    // FollowButton,
     InputPassword,
     CloseButton,
   },
@@ -272,7 +299,7 @@ export default defineComponent({
       .symbols();
   },
   watch: {
-    "account.password": function () {
+    updatedPwd: function () {
       this.validatePassword();
     },
     checkPwd: function () {
@@ -280,6 +307,32 @@ export default defineComponent({
     },
   },
   methods: {
+    // Profile edit modal
+    onInputImage(event: any) {
+      // this.updatedInfo.file = this.$refs.profileImg.files
+      // let files = this.$refs.profileImg;
+      let files = event.target.files[0];
+      console.log(files);
+      this.updatedInfo.file = files;
+      //이미지 프리뷰
+      this.tempimage = URL.createObjectURL(files);
+      console.log(this.tempimage);
+    },
+    // image file은 form data로 보내야함
+    addUpdatedInfo() {
+      const updatedInfo = new FormData();
+      // updatedInfo.append("data", JSON.stringify(this.updatedInfo));
+      updatedInfo.append("email", this.userInfo.email);
+      updatedInfo.append("file", this.updatedInfo.file);
+      updatedInfo.append("intro", this.updatedInfo.intro);
+      updatedInfo.append("nickname", this.updatedInfo.nickname);
+      console.log(updatedInfo);
+      AccountsAPI.updateProfileInfo(updatedInfo)
+        .then((res) => {
+        console.log(res);
+      });
+    },
+    ...mapActions(accountsStore, ["getLogout"]),
     handleFollow() {
       this.follow = !this.follow;
     },
@@ -290,23 +343,22 @@ export default defineComponent({
       this.isOpen = false;
     },
     doneEditInfo() {
-      // 정보 수정 담아서 BE로 보내는 method
       this.closeEditModal();
     },
     // 수정 필요
-    async changeProfilePic() {
+    changeProfilePic() {
       // 프로필 사진 변경 정보 담아서 BE로 보내는 method
       // 사진 변경 완료, 실패 modal도 있으면 좋을듯
-      await AccountsAPI.updateProfileIntro(
-        this.userInfo.email,
-        this.userInfo.intro
-      ).then((res: ResponseData) => {
-        if (res.data === "success") {
-          console.log("자기소개 변경에 성공했습니다.");
-        } else {
-          console.log("자기소개 변경에 실패했습니다.");
-        }
-      });
+      // await AccountsAPI.updateProfileIntro(
+      //   this.userInfo.email,
+
+      // ).then((res: ResponseData) => {
+      //   if (res.data === "success") {
+      //     console.log("자기소개 변경에 성공했습니다.");
+      //   } else {
+      //     console.log("자기소개 변경에 실패했습니다.");
+      //   }
+      // });
       this.closeEditModal();
     },
     openChangePwdModal() {
@@ -317,7 +369,7 @@ export default defineComponent({
     },
     // 변경할 비밀번호 유효성 검사
     validatePassword() {
-      if (!this.passwordSchema.validate(this.account.password)) {
+      if (!this.passwordSchema.validate(this.updatedPwd)) {
         this.valid.password = true;
         return;
       }
@@ -328,21 +380,27 @@ export default defineComponent({
       if (!this.valid.password && !this.valid.checkPwd) {
         await AccountsAPI.updatePassword(
           this.userInfo.email,
-          this.updateInfo
-        ).then((res: ResponseData) => {
-          if (res.data === "success") {
-            console.log("비밀번호 변경에 성공했습니다.");
-            this.canChangePwd = true;
-          } else {
-            console.log("비밀번호 변경에 실패했습니다.");
-            this.canChangePwd = false;
-          }
-        });
+          this.updatedPwd,
+          this.originalPwd
+        )
+          .then((res: ResponseData) => {
+            console.log(res);
+            if (res.data === "success") {
+              alert("비밀번호를 성공적으로 바꿨습니다 😊");
+              this.closeChangePwdModal();
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+            alert(
+              "비밀번호를 바꾸지 못했습니다.😢 \n입력하신 기존 비밀번호가 틀린 것은 아닐까요? \n기존 비밀번호가 기억나지 않는다면 비밀번호 찾기를 이용해주세요!"
+            );
+          });
       }
     },
     // 비밀번호와 비밀번호 확인 입력값의 일치 여부 체크
     checkPassword() {
-      if (this.account.password !== this.checkPwd) {
+      if (this.updatedPwd !== this.checkPwd) {
         this.valid.checkPwd = true;
         return;
       }
@@ -357,26 +415,37 @@ export default defineComponent({
       this.isSignoutOpen = false;
     },
     signOut() {
-      // 회원탈퇴 요청
-      // 회원 탈퇴 처리되었습니다 팝업 open
+      AccountsAPI.deleteAccount(this.userInfo.email)
+        .then((res: ResponseData) => {
+          console.log(res.data);
+          this.getLogout();
+          this.$router.push({ name: "Login" });
+        })
+        .catch((e) => {
+          alert("회원탈퇴 실패");
+          console.log(e);
+        });
+      this.$router.replace("/");
     },
     // 비밀번호 컴포넌트에 입력된 텍스트 가져오기
     updateCurrentPwd(value: string) {
-      this.currentPwd = value;
+      this.originalPwd = value;
     },
     updatePassword(value: string) {
-      this.account.password = value;
+      this.updatedPwd = value;
     },
     updatecheckPwd(value: string) {
       this.checkPwd = value;
     },
     // Profile 정보 가져오기
-    // 수정 필요
     getProfileInfo() {
-      AccountsAPI.getProfileInfo(this.userInfo.email, this.profileInfo.email)
+      AccountsAPI.getProfileInfo(
+        this.userInfo.id,
+        Number(this.$route.params.id)
+      )
         .then((res: ResponseData) => {
-          this.profileInfo.intro = res.data.intro;
-          this.profileInfo.nickname = res.data.nickname;
+          this.profileInfo = res.data;
+          console.log(this.profileInfo);
         })
         .catch((e) => {
           console.log(e);
@@ -389,6 +458,27 @@ export default defineComponent({
 <style scoped lang="scss">
 // accounts에서 input css 이용
 @import "@/assets/css/accounts.scss";
+
+// profile edit
+.tempimage {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.altimg {
+  display: flex;
+  width: 55px;
+  height: 55px;
+  cursor: pointer;
+}
+
+.altimg:hover {
+  transition: all 0.2s linear;
+  transform: scale(1.3);
+}
+
 
 // signout confirmation modal
 .signout-btn {
@@ -535,7 +625,7 @@ img {
 .container {
   max-width: 1200px;
   min-width: 320px;
-  margin: 0 auto;
+  margin: $size-big auto;
   padding: 0 1rem;
   border: 1px solid $grey;
 }
@@ -560,7 +650,8 @@ img {
 /* Profile Section */
 
 .profile {
-  padding: 5rem 0;
+  // padding: 5rem 0;
+  padding: 5rem 0 1rem 0;
 }
 
 .profile::after {
@@ -593,7 +684,7 @@ img {
   width: auto;
 }
 
-.profile-user-name {
+.profile-user-nickname {
   display: block;
   float: left;
   font-size: $font-large;
@@ -626,7 +717,9 @@ img {
 }
 
 .profile-stats {
-  margin: 1rem auto 0 auto;
+  margin: 2.3rem 0 0 0;
+  display: flex;
+  justify-content: center;
 }
 
 .profile-stats li {
@@ -634,7 +727,6 @@ img {
   font-size: 1.6rem;
   line-height: 1.5;
   margin-right: 2rem;
-  cursor: pointer;
 }
 
 .profile-stats li:last-of-type {
@@ -660,7 +752,8 @@ img {
   .profile {
     display: flex;
     flex-wrap: wrap;
-    padding: 4rem 0;
+    // padding: 4rem 0;
+    padding: 4rem 0 0.5rem 0;
   }
 
   .profile::after {
@@ -686,7 +779,7 @@ img {
     margin-top: 1rem;
   }
 
-  .profile-user-name {
+  .profile-user-nickname {
     display: block;
     font-size: $font-large;
   }
@@ -721,6 +814,7 @@ img {
   .profile-stats {
     order: 1;
     margin-top: 1.5rem;
+    display: inline-block;
   }
 
   .profile-stats ul {
