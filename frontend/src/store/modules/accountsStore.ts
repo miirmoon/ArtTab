@@ -4,6 +4,7 @@ import AccountsAPI from "@/apis/accountsAPI";
 import LoginInfo from "@/types/LoginInfo";
 import UserInfo from "@/types/UserInfo";
 import ResponseData from "@/types/ResponseData";
+import { ConsoleNetworkOutline } from "mdue";
 
 export interface AccountsState {
   isLogin: boolean;
@@ -20,7 +21,7 @@ export const accountsStore: Module<AccountsState, RootState> = {
     isLoginError: false,
     joinInfo: null,
     userInfo: null,
-    isConfirmEmail: false,
+    isConfirmEmail: true,
   },
   getters: {
     checkLogin: (state) => {
@@ -37,9 +38,15 @@ export const accountsStore: Module<AccountsState, RootState> = {
     SET_IS_LOGIN: (state, isLogin: boolean) => {
       state.isLogin = isLogin;
     },
+    SET_IS_LOGIN_ERROR: (state, isLoginError: boolean) => {
+      state.isLoginError = isLoginError;
+    },
     SET_USER_INFO: (state, userInfo: UserInfo) => {
       state.isLogin = true;
       state.userInfo = userInfo;
+    },
+    SET_IS_CONFIRM_EMAIL: (state, isConfirmed: boolean) => {
+      state.isConfirmEmail = isConfirmed;
     },
   },
   actions: {
@@ -51,22 +58,31 @@ export const accountsStore: Module<AccountsState, RootState> = {
     async getLogin({ commit }, user: LoginInfo) {
       await AccountsAPI.login(user)
         .then((res: ResponseData) => {
-          console.log(res);
-          if (res.data) {
-            commit("SET_IS_LOGIN", true);
-            sessionStorage.setItem("access-token", res.data);
-          } else {
+          // 비밀번호 틀린것 등 fail일 때
+          if (res.data === "fail") {
             commit("SET_IS_LOGIN", false);
-            alert("비밀번호가 틀렸습니다.");
+            commit("SET_IS_LOGIN_ERROR", true);
+            commit("SET_IS_CONFIRM_EMAIL", true);
           }
-          // 이메일 인증 여부 확인
-          // 이메일 인증 안된 사용자이면 joinInfo에 이메일 저장
-          // commit("SET_JOIN_EMAIL", "");
-          // commit("SET_JOIN_EMAIL", user.email);
+          // 이메일 인증되지 않은 사람일 때
+          else if (res.data === "NoauthorizedMember") {
+            commit("SET_JOIN_INFO", user);
+            commit("SET_IS_LOGIN", false);
+            commit("SET_IS_LOGIN_ERROR", false);
+            commit("SET_IS_CONFIRM_EMAIL", false);
+          }
+          // 정상 로그인
+          else {
+            commit("SET_IS_LOGIN", true);
+            commit("SET_IS_LOGIN_ERROR", false);
+            commit("SET_IS_CONFIRM_EMAIL", true);
+            sessionStorage.setItem("access-token", res.data);
+          }
         })
-        .catch((e) => {
+        .catch(() => {
           commit("SET_IS_LOGIN", false);
-          console.log(e);
+          commit("SET_IS_LOGIN_ERROR", true);
+          alert("로그인 중 오류가 발생했습니다.");
         });
     },
     async getSnsLogin({ commit }, token: string) {
