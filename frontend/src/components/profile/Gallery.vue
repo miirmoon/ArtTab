@@ -1,10 +1,4 @@
 <template>
-  <p>Gallery Component</p>
-  {{ userInfo.id }}
-  {{ userInfo.email }}
-  {{ userInfo.intro }}
-  {{ userInfo.nickname }}
-  {{ profileInfo.id }}
   <div class="container">
     <div class="gallery-header">
       <h3>마이 갤러리</h3>
