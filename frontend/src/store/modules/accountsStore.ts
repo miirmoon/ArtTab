@@ -58,6 +58,7 @@ export const accountsStore: Module<AccountsState, RootState> = {
       await AccountsAPI.login(user)
         .then((res: ResponseData) => {
           console.log(res.data);
+          // 비밀번호 틀린것 등 fail일 때
           if (res.data === "fail") {
             commit("SET_IS_LOGIN", false);
             commit("SET_IS_LOGIN_ERROR", true);
@@ -68,7 +69,7 @@ export const accountsStore: Module<AccountsState, RootState> = {
             commit("SET_IS_LOGIN_ERROR", false);
             commit("SET_IS_CONFIRM_EMAIL", false);
           }
-          // 비밀번호 틀린것 등 fail일 때
+          // 정상 로그인
           else {
             commit("SET_IS_LOGIN", true);
             commit("SET_IS_LOGIN_ERROR", false);
