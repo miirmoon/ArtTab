@@ -1,5 +1,7 @@
 <template>
   <div>
+    <div class="title">나의 그림 발자취<foot-print></foot-print></div>
+    <toast-message ref="toast"></toast-message>
     <div>
       <div class="container">
         <masonry-wall
@@ -10,11 +12,29 @@
         >
           <template #default="{ item }">
             <figure class="card card--1">
-              <img :src="item.imageUrl" :alt="`${item.artworkTitle}`" />
+              <router-link
+                :to="{
+                  name: 'ArtworkDetail',
+                  params: { id: item.artworkId },
+                }"
+              >
+                <img :src="item.imageUrl" :alt="`${item.artworkTitle}`" />
+              </router-link>
               <figcaption>
                 <span class="info">
-                  <h3 class="artwork-title">{{ item.artworkTitle }}</h3>
+                  <router-link
+                    :to="{
+                      name: 'ArtworkDetail',
+                      params: { id: item.artworkId },
+                    }"
+                  >
+                    <h3 class="artwork-title">{{ item.artworkTitle }}</h3>
+                  </router-link>
+                  <router-link
+                    :to="{ name: 'Profile', params: { id: item.memberId } }"
+                  >
                   <span class="artwork-artist">{{ item.memberNickname }}</span>
+                </router-link>
                 </span>
                 <span class="links">
                   <!-- like button -->
@@ -24,10 +44,9 @@
                       :liked="likeInfo.likeOrNot"
                       :artworkId="item.artworkId"
                       :userId="userInfo.id"
-                      @toggle="toggleLike"
+                      @toggle="toggleLike(index)"
                       @message="showToastMessage"
                     ></like-button>
-                    <toast-message ref="toast"></toast-message>
                   </a>
                 </span>
               </figcaption>
@@ -51,6 +70,7 @@ import LikeButton from "@/components/common/LikeButton.vue";
 import ToastMessage from "@/components/common/ToastMessage.vue";
 import { mapState } from "vuex";
 import { ArrowUpBoldCircleOutline } from "mdue";
+import { FootPrint } from "mdue";
 import AccountsAPI from "@/apis/accountsAPI";
 import ResponseData from "@/types/ResponseData";
 import ProfileInfo from "@/types/ProfileInfo";
@@ -63,12 +83,14 @@ export default defineComponent({
       items: [] as any,
       likeInfo: [] as any,
       profileInfo: {} as ProfileInfo,
+      isArtwork: false,
     };
   },
   components: {
     LikeButton,
-    ArrowUpBoldCircleOutline,
     ToastMessage,
+    ArrowUpBoldCircleOutline,
+    FootPrint,
   },
   mounted() {
     this.getProfileInfo();
@@ -82,6 +104,11 @@ export default defineComponent({
       const res = await ArtworkAPI.getArtworkListByMember(Number(this.$route.params.id));
       console.log(res);
       this.items = res.data;
+      if (this.items.length == 0) {
+        this.isArtwork = false;
+      } else {
+        this.isArtwork = true;
+      }
       let size = this.items.length;
       for (let i = 0; i < size; i++) {
         this.likeInfo.push({
@@ -89,8 +116,8 @@ export default defineComponent({
         })
       }
     },
-    toggleLike(result: boolean) {
-      this.likeInfo.likeOrNot = result;
+    toggleLike(index: number) {
+      this.items[index].likeOrNot = !this.items[index].likeOrNot;
     },
     showToastMessage(msg: string) {
       (this.$refs["toast"] as typeof ToastMessage).showToast(msg);
@@ -126,6 +153,13 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.title {
+  margin-top: $size-large;
+  margin-left: $size-small;
+  font-size: $size-large;
+  font-weight: $weight-semi-bold;
+}
+
 .container {
   margin-top: 3rem;
 }

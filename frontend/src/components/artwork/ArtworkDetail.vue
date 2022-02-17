@@ -6,31 +6,28 @@
     <div class="artworkdesc">
       <div class="profile">
         <div class="profile-imgbox">
-          <img :src="artwork.writerProfileSaveFolder" alt="작가 프로필 사진" />
+          <router-link
+            :to="{ name: 'Profile', params: { id: artwork.writerId } }"
+          >
+            <img :src="artwork.writerProfileSaveFolder" alt="작가 프로필 사진" />
+          </router-link>
         </div>
         <div>
           <div class="profile-title">{{ artwork.title }}</div>
           <div>
-            <div class="profile-writer">by. {{ artwork.writerNickname }}</div>
+            <router-link
+              :to="{ name: 'Profile', params: { id: artwork.writerId } }"
+            >
+              <div class="profile-writer">by. {{ artwork.writerNickname }}</div>
+            </router-link>
             <!-- 본인 작품일 경우 follow버튼 대신 수정 버튼-->
             <!-- 수정하기 버튼 클릭시 수정 페이지로 데이터 전달 -->
             <button
               v-if="artwork.writerId === userInfo.id"
               class="btn-white"
-              @click="artworkUpdate"
+              @click="moveArtworkUpdate"
             >
-              <router-link
-                :to="{
-                  name: 'ArtworkUpdate',
-                  query: {
-                    artworkId: this.artworkId,
-                    title: this.artwork.title,
-                    desciption: this.artwork.desciption,
-                    artworkSaveFolder: this.artwork.artworkSaveFolder,
-                  },
-                }"
-                >수정하기
-              </router-link>
+              수정하기
             </button>
             <follow-button
               v-else
@@ -46,7 +43,7 @@
         </div>
       </div>
       <div class="additionalinfo">
-        <div v-if="artwork.writerId !== userInfo.id" class="like-box">
+        <div class="like-box">
           <like-button
             class="icon"
             :liked="artwork.likeOrNot"
@@ -61,7 +58,7 @@
         <calendar-clock class="icon icon-date"></calendar-clock>
         <div>{{ computedDate }}</div>
       </div>
-      <div class="desc">{{ artwork.desciption }}</div>
+      <div class="desc">{{ artwork.description }}</div>
     </div>
     <artwork-comments :artworkid="artworkId"></artwork-comments>
     <toast-message ref="toast"></toast-message>
@@ -121,6 +118,7 @@ export default defineComponent({
         .then((res: ResponseData) => {
           console.log(res.data);
           this.artwork = res.data;
+          console.log(this.artwork);
         })
         .catch((e) => {
           console.log(e);
@@ -159,6 +157,17 @@ export default defineComponent({
     },
     showToastMessage(msg: string) {
       (this.$refs["toast"] as typeof ToastMessage).showToast(msg);
+    },
+    moveArtworkUpdate() {
+      this.$router.push({
+        name: "ArtworkUpdate",
+        query: {
+          artworkId: this.artworkId,
+          title: this.artwork.title,
+          description: this.artwork.description,
+          artworkSaveFolder: this.artwork.artworkSaveFolder,
+        },
+      });
     },
   },
 });
