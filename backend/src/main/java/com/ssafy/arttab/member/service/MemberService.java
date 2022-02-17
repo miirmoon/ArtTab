@@ -287,7 +287,7 @@ public class MemberService {
 
     /**
      * 회원 삭제
-     * @param loginEmail
+     * @param id
      */
     @Transactional
     public void deleteMember(final Long id){
