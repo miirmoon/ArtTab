@@ -1,5 +1,6 @@
 <template>
   <div>
+    <toast-message ref="toast"></toast-message>
     <div class="container">
       <masonry-wall
         :items="items"
@@ -9,11 +10,29 @@
       >
         <template #default="{ item }">
           <figure class="card card--1">
-            <img :src="item.imageUrl" :alt="`${item.artworkTitle}`" />
+            <router-link
+                  :to="{
+                    name: 'ArtworkDetail',
+                    params: { id: item.artworkId },
+                  }"
+                >
+              <img :src="item.imageUrl" :alt="`${item.artworkTitle}`" />
+            </router-link>
             <figcaption>
               <span class="info">
-                <h3 class="artwork-title">{{ item.artworkTitle }}</h3>
-                <span class="artwork-artist">{{ item.memberNickname }}</span>
+                <router-link
+                  :to="{
+                    name: 'ArtworkDetail',
+                    params: { id: item.artworkId },
+                  }"
+                >
+                  <h3 class="artwork-title">{{ item.artworkTitle }}</h3>
+                </router-link>
+                <router-link
+                  :to="{ name: 'Profile', params: { id: item.memberId } }"
+                >
+                  <span class="artwork-artist">{{ item.memberNickname }}</span>
+                </router-link>
               </span>
               <span class="links">
                 <!-- like button -->
@@ -26,7 +45,6 @@
                     @toggle="toggleLike"
                     @message="showToastMessage"
                   ></like-button>
-                  <toast-message ref="toast"></toast-message>
                 </a>
               </span>
             </figcaption>
@@ -38,7 +56,7 @@
     <loader :showLoader="showLoader"></loader>
     <!-- Scroll To Top Button -->
     <arrow-up-bold-circle-outline
-      class="arrow scroll-to-top"
+      class="scroll-to-top"
       @click="scrollToTop"
     ></arrow-up-bold-circle-outline>
     <!-- Observer -->
@@ -90,7 +108,9 @@ export default defineComponent({
       for (let i = 0; i < size; i++) {
         this.likeInfo.push({
           likeOrNot: items[i].likeOrNot,
+          artworkId: items[i].artworkId,
         })
+        console.log(items[i].likeOrNot);
       }
     },
     toggleLike(result: boolean) {
