@@ -6,7 +6,7 @@
     <div class="artworkdesc">
       <div class="profile">
         <div class="profile-imgbox">
-          <router-link
+          <!-- <router-link
             :to="{ name: 'Profile', params: { id: artwork.writerId } }"
           >
             <img
@@ -18,11 +18,11 @@
         <div>
           <div class="profile-title">{{ artwork.title }}</div>
           <div>
-            <router-link
+            <!-- <router-link
               :to="{ name: 'Profile', params: { id: artwork.writerId } }"
-            >
+            > -->
               <div class="profile-writer">by. {{ artwork.writerNickname }}</div>
-            </router-link>
+            <!-- </router-link> -->
             <!-- 본인 작품일 경우 follow버튼 대신 수정 버튼-->
             <!-- 수정하기 버튼 클릭시 수정 페이지로 데이터 전달 -->
             <button
