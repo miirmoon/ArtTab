@@ -9,7 +9,10 @@
           <router-link
             :to="{ name: 'Profile', params: { id: artwork.writerId } }"
           >
-            <img :src="artwork.writerProfileSaveFolder" alt="작가 프로필 사진" />
+            <img
+              :src="artwork.writerProfileSaveFolder"
+              alt="작가 프로필 사진"
+            />
           </router-link>
         </div>
         <div>
